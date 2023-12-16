@@ -121,8 +121,13 @@ namespace SerialOutputEx
 
         public override void Dispose()
         {
-            //AtsEXを選択解除したときにコンソールを非表示とする
-            FreeConsole();                  //0.2.31217.1 追記 
+            //AtsEXを選択解除したときに
+            //コンソールを非表示とする //0.2.31217.1 追記
+            if (Debug)
+            {
+                FreeConsole();
+            } 
+            //シリアルポートを閉じる
             if (serialPort.IsOpen)
             {
                 serialPort.Close();
