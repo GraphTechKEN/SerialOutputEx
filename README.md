@@ -14,7 +14,7 @@ https://automatic9045.github.io/AtsEX/
 2. SerialOutputExをダウンロードします。
 
 3. ファイルの設置
-AtsEXをインストールしたフォルダ内(例：C:\Program Files\mackoy\BveTs6\Input Devices\AtsEx)に、
+  AtsEXをインストールしたフォルダ内(例：C:\Program Files\mackoy\BveTs6\Input Devices\AtsEx)に、
 バージョン番号とその直下にExtentionというフォルダがありますので、その中フォルダ内に、
 - SerialOutputEx.dll
 - SerialOutput.xml(既存設定ファイル)
