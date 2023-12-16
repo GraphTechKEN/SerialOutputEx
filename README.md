@@ -15,8 +15,9 @@ SerialOutputプラグインは[こちら](https://twitter.com/ED67900_5/status/1
 AtsEXについては[こちら](https://automatic9045.github.io/AtsEX/)を参照してください。(おーとま様AtsEXページ)
 
 2. SerialOutputExをダウンロードします。
+  ダウンロードはこちら#release
 
-3. ファイルの設置  
+4. ファイルの設置  
 AtsEXをインストールしたフォルダ内に、
 バージョン番号とその直下にExtentionというフォルダがあります。  
 > `例：`
