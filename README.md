@@ -23,7 +23,7 @@ AtsEXをインストールしたフォルダ内に、
 バージョン番号とその直下にExtentionというフォルダがあります。  
 > `例：`
 > - C:\Program Files\mackoy\BveTs6\Input Devices\AtsEx\1.0\Extentions
-> - C:\Users\Public\Documents\AtsEx\1.0\Extensions など
+> - C:\Users\Public\Documents\AtsEx\1.0\Extensions など  
 この中フォルダ内に、
   - SerialOutputEx.dll
   - SerialOutput.xml(既存設定ファイル)
