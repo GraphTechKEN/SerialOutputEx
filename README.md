@@ -18,18 +18,18 @@ AtsEXについては[こちら](https://automatic9045.github.io/AtsEX/)を参照
 > [!CAUTION]
 > `SerialOutput.dllのゾーン識別子(ファイルを右クリックし、プロパティ内下部)は許可して削除してください。`
 
-4. ファイルの設置  
+3. ファイルの設置  
 AtsEXをインストールしたフォルダ内に、
 バージョン番号とその直下にExtentionというフォルダがあります。  
 > `例：`
 > - C:\Program Files\mackoy\BveTs6\Input Devices\AtsEx\1.0\Extentions
 > - C:\Users\Public\Documents\AtsEx\1.0\Extensions など
 
-この中フォルダ内に、
-- SerialOutputEx.dll
-- SerialOutput.xml(既存設定ファイル)
-- シリアル出力エディタ.exe(任意、上SerialOutput.xml編集用、入手方法は下記)
-を設置します。  
+  この中フォルダ内に、
+  - SerialOutputEx.dll
+  - SerialOutput.xml(既存設定ファイル)
+  - シリアル出力エディタ.exe(任意、上SerialOutput.xml編集用、入手方法は下記)
+  を設置します。  
 
 4. BVEを起動し、設定メニューの入力プラグインのAtsEXにチェックマークを入れる(次回起動時以降は省略)
 
