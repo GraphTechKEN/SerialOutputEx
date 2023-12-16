@@ -1,8 +1,7 @@
 # SerialOutputEx(暫定版)
 本プラグインはED67900-5様が制作されたシリアル出力プラグイン(SerialOutput)をおーとま様が開発中のAtsEX版に適用させたものとなります。
-::: note
-主な特徴
-:::
+> [!info]
+> `ご使用は自己責任でお願いいたします。本内容による損害等については一切の責任を負いません。
 - BVE5と6への両対応化
 - 車両プラグインへの組込が不要になる
 - 既存の設定ファイル(SerialOutput.xml)が利用可能
@@ -28,3 +27,12 @@ https://automatic9045.github.io/AtsEX/
 - 出力電文はアスキーのみ
 - HEX出力は未対応(いそぎます)
 - サウンド出力未対応
+
+> [!WARNING]
+> `ご使用は自己責任でお願いいたします。本内容による損害等については一切の責任を負いません。`
+
+## 謝辞
+本プラグインはTstsuOtter様のBVE_ATSPITempを使用して記述しております。  
+BVE_ATSPITemp(https://github.com/TetsuOtter/BVE_ATSPITemp)
+厚く御礼申し上げます。
+
