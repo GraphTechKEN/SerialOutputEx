@@ -11,8 +11,8 @@ SerialOutputプラグインは[こちら](https://twitter.com/ED67900_5/status/1
 - 既存の設定ファイル(SerialOutput.xml)が利用可能
 
 ## 導入方法
-1. AtsEX(入力プラグイン版)を[こちら](https://automatic9045.github.io/AtsEX/)からインストールします。
-インストール方法とインストーラは[こちら](https://automatic9045.github.io/AtsEX/)を参照してください。(おーとま様AtsEXページ)
+1. AtsEX(入力プラグイン版)を[こちら](https://automatic9045.github.io/AtsEX/download/)からインストールします。
+AtsEXについては[こちら](https://automatic9045.github.io/AtsEX/)を参照してください。(おーとま様AtsEXページ)
 
 2. SerialOutputExをダウンロードします。
 
