@@ -13,7 +13,8 @@ https://automatic9045.github.io/AtsEX/
 
 2. SerialOutputExをダウンロードします。
 
-3.AtsEXをインストールしたフォルダ内(例：C:\Program Files\mackoy\BveTs6\Input Devices\AtsEx)に、
+3. ファイルの設置
+AtsEXをインストールしたフォルダ内(例：C:\Program Files\mackoy\BveTs6\Input Devices\AtsEx)に、
 バージョン番号とその直下にExtentionというフォルダがありますので、その中フォルダ内に、
 - SerialOutputEx.dll
 - SerialOutput.xml(既存設定ファイル)
@@ -21,7 +22,7 @@ https://automatic9045.github.io/AtsEX/
 を設置します。
 注意：SerialOutput.dllのゾーン識別子(ファイルを右クリックし、プロパティ内下部)は許可してください。
 
-4.BVEを起動しシナリオを開始すると、ポートの設定が正しければ出力が開始されます。
+4. BVEを起動しシナリオを開始すると、ポートの設定が正しければ出力が開始されます。
 
 ### 暫定版(将来的にやりたいこと)
 - 出力電文のHEX出力(いそぎます)
