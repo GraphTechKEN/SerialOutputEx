@@ -10,7 +10,7 @@
 - ※暫定版：十進数のアスキー送信のみ
 
 ## 導入方法
-1. AtsEX(入力プラグイン版)を[こちら](https://automatic9045.github.io/AtsEX/download/)からインストールします。
+1. AtsEX(入力デバイスプラグイン版)を[こちら](https://automatic9045.github.io/AtsEX/download/)からインストールします。(exeインストーラ版を推奨)
 AtsEXについては[こちら](https://automatic9045.github.io/AtsEX/)を参照してください。(おーとま様AtsEXページ)
 
 2. SerialOutputExをダウンロードします。
