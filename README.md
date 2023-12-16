@@ -26,7 +26,7 @@ AtsEXをインストールしたフォルダ内に、
 > - C:\Users\Public\Documents\AtsEx\1.0\Extensions など  
 この中フォルダ内に、
   - SerialOutputEx.dll
-  - SerialOutput.xml(既存設定ファイル)
+  - SerialOutputEx.xml(既存設定ファイル名称をSerialOutputEx.xmlに変更する)
   - シリアル出力エディタ.exe(任意、上SerialOutput.xml編集用、入手方法は下記)
   を設置します。  
 
@@ -39,7 +39,7 @@ AtsEXをインストールしたフォルダ内に、
 
 2. シリアル出力エディタを開き、出力先のポート情報と、出力したい項目の順番を選択します。
 
-3. 保存をクリックすると、設定するxmlファイルを生成することができます。この時の名称は「SerialOutput.xml」としてください。
+3. 保存をクリックすると、設定するxmlファイルを生成することができます。この時の名称は「SerialOutputEx.xml」(プラグイン名と拡張子よりも前と同じ)としてください。
 
 ### 暫定版(将来的にやりたいこと)
 - [x] SerialOutput.xmlに対応
