@@ -36,11 +36,11 @@ AtsEXをインストールしたフォルダ内(例：C:\Program Files\mackoy\Bv
 > `ご使用は自己責任でお願いいたします。本内容による損害等については一切の責任を負いません。`
 
 ## 謝辞
-本プラグインはED67900-5様のSerialOutputプラグインを参考に記述しております。
+本プラグインはED67900-5様のSerialOutputプラグインを参考に記述しております。  
 また、設定ファイルフォーマット互換(SerialOutput.xml)とさせていただきました。
 (https://twitter.com/ED67900_5/status/1112336446994542592))  
 この場を借りて、厚く御礼申し上げます。
 
-本プラグインはおーとま様のAtsEXの機能拡張を利用しております。  
-(https://automatic9045.github.io/AtsEX/)  
+本プラグインはおーとま様のAtsEXの機能拡張を利用しております。    
+(https://automatic9045.github.io/AtsEX/)  　　
 この場を借りて、厚く御礼申し上げます。
