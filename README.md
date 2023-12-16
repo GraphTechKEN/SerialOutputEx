@@ -23,7 +23,7 @@ AtsEXをインストールしたフォルダ内に、
 この中フォルダ内に、
 - SerialOutputEx.dll
 - SerialOutput.xml(既存設定ファイル)
-- シリアル出力エディタ.exe(任意)
+- シリアル出力エディタ.exe(任意、上SerialOutput.xml編集用)
 を設置します。  
 
 
