@@ -24,6 +24,7 @@ AtsEXをインストールしたフォルダ内に、
 > - `例：`
 > - C:\Program Files\mackoy\BveTs6\Input Devices\AtsEx\1.0\Extentions
 > - C:\Users\Public\Documents\AtsEx\1.0\Extensions など  
+
 この中フォルダ内に、
   - SerialOutputEx.dll
   - SerialOutputEx.xml(既存設定ファイル名称をSerialOutputEx.xmlに変更する)
