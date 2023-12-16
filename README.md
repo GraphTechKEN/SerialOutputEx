@@ -19,7 +19,7 @@ AtsEXをインストールしたフォルダ内に、
 - SerialOutputEx.dll
 - SerialOutput.xml(既存設定ファイル)
 - シリアル出力エディタ.exe(任意)
-を設置します。
+を設置します。  
 (例：C:\Program Files\mackoy\BveTs6\Input Devices\AtsEx\1.0\ExtentionsまたはC:\Users\Public\Documents\AtsEx\1.0\Extensions など)
 
 > [!CAUTION]
