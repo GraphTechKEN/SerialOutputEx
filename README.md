@@ -1,5 +1,9 @@
 # SerialOutputEx(暫定版)
-本プラグインはED67900-5様が制作されたシリアル出力プラグイン(SerialOutput)をおーとま様が開発中のAtsEX版に適用させたものとなります。
+本プラグインはED67900-5様が制作されたシリアル出力プラグイン(SerialOutput)の機能を参考に、  
+おーとま様が開発中のAtsEX版に適用させたものとなります。
+
+SerialOutputプラグインは[こちら](https://twitter.com/ED67900_5/status/1112336446994542592)
+
 > [!TIP]
 > 主な特徴
 - BVE5と6への両対応化
@@ -7,9 +11,8 @@
 - 既存の設定ファイル(SerialOutput.xml)が利用可能
 
 ## 導入方法
-1. AtsEX(入力プラグイン版)をインストールします。
-インストール方法とインストーラは下記を参照してください。(おーとま様AtsEXページ)
-https://automatic9045.github.io/AtsEX/
+1. AtsEX(入力プラグイン版)を[こちら](https://automatic9045.github.io/AtsEX/)からインストールします。
+インストール方法とインストーラは[こちら](https://automatic9045.github.io/AtsEX/)を参照してください。(おーとま様AtsEXページ)
 
 2. SerialOutputExをダウンロードします。
 
@@ -46,7 +49,7 @@ AtsEXをインストールしたフォルダ内に、
 ## 謝辞
 本プラグインはED67900-5様のSerialOutputプラグインの機能を参考に制作しております。  
 また、設定ファイルフォーマット互換(SerialOutput.xml)とさせていただきました。
-(https://twitter.com/ED67900_5/status/1112336446994542592))  
+(https://twitter.com/ED67900_5/status/1112336446994542592)  
 この場を借りて、厚く御礼申し上げます。
 
 本プラグインはおーとま様のAtsEXの機能拡張を利用しております。    
