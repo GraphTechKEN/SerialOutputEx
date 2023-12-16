@@ -7,6 +7,7 @@
 >- BVE5と6への両対応化
 >- 車両プラグインへの組込が不要
 >- 既存の設定ファイル(SerialOutput.xml)が利用可能
+- ※暫定版：十進数のアスキー送信のみ
 
 ## 導入方法
 1. AtsEX(入力プラグイン版)を[こちら](https://automatic9045.github.io/AtsEX/download/)からインストールします。
