@@ -2,8 +2,6 @@
 本プラグインはED67900-5様が制作されたシリアル出力プラグイン(SerialOutput)の機能を参考に、  
 おーとま様が開発中のAtsEX版に適用させたものとなります。
 
-SerialOutputプラグインは[こちら](https://twitter.com/ED67900_5/status/1112336446994542592)
-
 > [!TIP]
 > 主な特徴
 - BVE5と6への両対応化
@@ -15,7 +13,7 @@ SerialOutputプラグインは[こちら](https://twitter.com/ED67900_5/status/1
 AtsEXについては[こちら](https://automatic9045.github.io/AtsEX/)を参照してください。(おーとま様AtsEXページ)
 
 2. SerialOutputExをダウンロードします。
-  ダウンロードはこちら#release
+  ダウンロードは[こちら](https://github.com/GraphTechKEN/SerialOutputEx/releases)下部のAssetから、「SerialOutputEx.dll」をダウンロードします。
 
 4. ファイルの設置  
 AtsEXをインストールしたフォルダ内に、
@@ -36,7 +34,14 @@ AtsEXをインストールしたフォルダ内に、
 
 4. BVEを起動し、設定メニューの入力プラグインのAtsEXにチェックマークを入れる(次回起動時以降は省略)
 
-5. 外部(連動)機器が正しく接続され、ポートの設定が正しければ、連動動作が開始されます。(たぶん...) 
+5. 外部(連動)機器が正しく接続され、ポートの設定が正しければ、連動動作が開始されます。(たぶん...)
+
+## シリアル出力設定ファイルの生成方法
+1. SerialOutputプラグインを[ダウンロード](https://twitter.com/ED67900_5/status/1112336446994542592)します。
+
+2. シリアル出力エディタを開き、出力先のポート情報と、出力したい項目の順番を選択します。
+
+3. 保存をクリックすると、設定するxmlファイルを生成することができます。この時の名称は「SerialOutput.xml」としてください。
 
 ### 暫定版(将来的にやりたいこと)
 - [x] SerialOutput.xmlに対応
