@@ -10,11 +10,13 @@
 - ※暫定版：十進数のアスキー送信のみ
 
 ## 導入方法
-1. AtsEX(入力デバイスプラグイン版)を[こちら](https://automatic9045.github.io/AtsEX/download/)からインストールします。(exeインストーラ版を推奨)
+1. AtsEX(入力デバイスプラグイン版)を[こちら](https://automatic9045.github.io/AtsEX/download/)からインストールします。(exeインストーラ版を推奨)  
 AtsEXについては[こちら](https://automatic9045.github.io/AtsEX/)を参照してください。(おーとま様AtsEXページ)
 
 2. SerialOutputExをダウンロードします。
-  ダウンロードは[こちら](https://github.com/GraphTechKEN/SerialOutputEx/releases)下部のAssetsから、「SerialOutputEx.dll」をダウンロードします。
+  [こちら](https://github.com/GraphTechKEN/SerialOutputEx/releases)下部のAssetsから、「SerialOutputEx.dll」をダウンロードします。
+> [!CAUTION]
+> `SerialOutput.dllのゾーン識別子(ファイルを右クリックし、プロパティ内下部)は許可して削除してください。`
 
 4. ファイルの設置  
 AtsEXをインストールしたフォルダ内に、
@@ -28,10 +30,6 @@ AtsEXをインストールしたフォルダ内に、
 - SerialOutput.xml(既存設定ファイル)
 - シリアル出力エディタ.exe(任意、上SerialOutput.xml編集用、入手方法は下記)
 を設置します。  
-
-
-> [!CAUTION]
-> `SerialOutput.dllのゾーン識別子(ファイルを右クリックし、プロパティ内下部)は許可して削除してください。`
 
 4. BVEを起動し、設定メニューの入力プラグインのAtsEXにチェックマークを入れる(次回起動時以降は省略)
 
