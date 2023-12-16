@@ -1,4 +1,4 @@
-# SerialOutputEx(暫定版)
+  # SerialOutputEx(暫定版)
 本プラグインはED67900-5様が制作された外部機器連動用シリアル出力プラグイン(SerialOutput)の機能を参考に、  
 おーとま様が開発中のAtsEX版に適用させたものとなります。
 
@@ -25,7 +25,7 @@ AtsEXをインストールしたフォルダ内に、
 > - C:\Program Files\mackoy\BveTs6\Input Devices\AtsEx\1.0\Extentions
 > - C:\Users\Public\Documents\AtsEx\1.0\Extensions など
 
-  この中フォルダ内に、
+     この中フォルダ内に、
   - SerialOutputEx.dll
   - SerialOutput.xml(既存設定ファイル)
   - シリアル出力エディタ.exe(任意、上SerialOutput.xml編集用、入手方法は下記)
