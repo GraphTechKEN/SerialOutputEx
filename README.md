@@ -15,7 +15,7 @@ https://automatic9045.github.io/AtsEX/
 
 3. ファイルの設置  
 AtsEXをインストールしたフォルダ内に、
-バージョン番号とその直下にExtentionというフォルダがあります。
+バージョン番号とその直下にExtentionというフォルダがあります。　　
 (例：C:\Program Files\mackoy\BveTs6\Input Devices\AtsEx\1.0\ExtentionsまたはC:\Users\Public\Documents\AtsEx\1.0\Extensions など)
 その中フォルダ内に、
 - SerialOutputEx.dll
