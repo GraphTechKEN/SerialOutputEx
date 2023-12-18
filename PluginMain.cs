@@ -10,6 +10,8 @@ using BveTypes.ClassWrappers;
 
 using AtsEx.PluginHost.Plugins;
 using AtsEx.PluginHost.Plugins.Extensions;
+using AtsEx.Extensions.ContextMenuHacker;
+using AtsEx.PluginHost;
 
 namespace SerialOutputEx
 {
@@ -17,12 +19,21 @@ namespace SerialOutputEx
     [HideExtensionMain]
     internal class PluginMain : AssemblyPluginBase, IExtension
     {
-        private readonly SerialPort serialPort = new SerialPort();
-        private readonly bool Debug = false;
-        private readonly OutputInfo outputInfo = new OutputInfo();
+        private SerialPort serialPort = new SerialPort();
+        private bool Debug = false;
+        private OutputInfo outputInfo = new OutputInfo();
 
         private string str_send_latch = "";
         private DateTime dateTime;
+
+        //0.3.31218.1 追記ここから
+
+        private ToolStripMenuItem item = new ToolStripMenuItem();
+        private ToolStripMenuItem tsi1 = new ToolStripMenuItem();
+        private ToolStripMenuItem tsiOutputOn = new ToolStripMenuItem();
+        private ToolStripMenuItem tsiOutputOff = new ToolStripMenuItem();
+
+        private bool output = true;
 
 
         [DllImport("kernel32.dll")]
@@ -34,6 +45,87 @@ namespace SerialOutputEx
         public PluginMain(PluginBuilder builder) : base(builder)
         {
 
+            Open();
+
+            //0.3.31218.1 追記ここから
+
+            ContextMenuItemType contextMenuItemType = new ContextMenuItemType();
+            contextMenuItemType = ContextMenuItemType.CoreAndExtensions;
+            ContextMenuHacker contextMenuHacker = new ContextMenuHacker(builder);
+
+            // 第1階層のメニュー
+
+            tsi1.Text = "SerialOutputEx 設定";
+            tsi1.ToolTipText = "SerialOutputExの動作設定をします";
+
+
+            // 第2階層のメニュー
+
+            tsiOutputOn.Text = "AtsEX連動:ON";
+            tsiOutputOn.ToolTipText = "AtsEXで連動します";
+            tsiOutputOn.Enabled = false;
+            // クリックイベントを追加する
+            // フォームで設定した ItemClicked イベントは第1階層の項目のみ発生する
+            tsiOutputOn.Click += contextMenuStrip_SerialOutputExOn_Click;
+
+            // 第1階層のメニューの最後尾に追加
+            tsi1.DropDownItems.Add(tsiOutputOn);
+
+            tsiOutputOff.Text = "AtsEX連動:OFF";
+            tsiOutputOff.ToolTipText = "車両プラグインで連動します";
+            tsiOutputOff.Click += contextMenuStrip_SerialOutputOff_Click;
+            BveHacker.ScenarioOpened += BveHacker_ScenarioOpened;
+            BveHacker.ScenarioClosed += BveHacker_ScenarioClosed;
+            // 第1階層のメニューの最後尾に追加する
+            tsi1.DropDownItems.Add(tsiOutputOff);
+
+            // コンテキストメニューに第1階層のメニューを追加する
+            contextMenuHacker.AddItem(tsi1, contextMenuItemType);
+
+            //0.3.31218.1 追記ここまで
+
+        }
+
+        private void BveHacker_ScenarioOpened(ScenarioOpenedEventArgs e)
+        {
+            tsiOutputOn.Enabled = false;
+            tsiOutputOff.Enabled = false;
+        }
+
+        private void BveHacker_ScenarioClosed(EventArgs e)
+        {
+            tsiOutputOn.Enabled = output;
+            tsiOutputOff.Enabled = !output;
+        }
+
+
+        private void contextMenuStrip_SerialOutputOff_Click(object sender, EventArgs e)
+        {
+            if (!BveHacker.IsScenarioCreated)
+            {
+                Dispose();
+                tsiOutputOn.Enabled = true;
+                tsiOutputOff.Enabled = false;
+                output = false;
+            }
+        }
+
+        //0.3.31218.1 追記
+        private void contextMenuStrip_SerialOutputExOn_Click(object sender, EventArgs e)
+        {
+            if (!BveHacker.IsScenarioCreated)
+            {
+                //コンソールを表示
+                Open();
+                tsiOutputOn.Enabled = false;
+                tsiOutputOff.Enabled = true;
+                output = true;
+            }
+
+        }
+
+        private void Open()
+        {
             string stTarget = System.Reflection.Assembly.GetExecutingAssembly().CodeBase;
             string dllPath = "";
             //ローカルファイルのパスを表すURI
@@ -62,7 +154,7 @@ namespace SerialOutputEx
                 if (!File.Exists(path))
                 {
                     path = pathParent;
-                    if(!File.Exists(path))
+                    if (!File.Exists(path))
                     {
                         MessageBox.Show("設定ファイル " + fileName + ".xml が見つかりません");　//0.2.31217.1 変更 設定ファイル名をdllと同じとする。
                         Dispose();
@@ -126,7 +218,7 @@ namespace SerialOutputEx
             if (Debug)
             {
                 FreeConsole();
-            } 
+            }
             //シリアルポートを閉じる
             if (serialPort.IsOpen)
             {
@@ -136,38 +228,41 @@ namespace SerialOutputEx
 
         public override TickResult Tick(TimeSpan elapsed)
         {
-            //If you want to change the Handle state, please access to Ats.Handle
-            //送信コマンド用
-            string str_send = "";
-            //コマンド解析用
-            string str = "";
-            //コマンド連結
-            for (int i = 0; i < outputInfo.outputInfoDataList.Count; i++)
+            if (output)
             {
-                str += SendCommandGenerator(outputInfo.outputInfoDataList[i]);
-            }
-
-            str_send = str;
-
-            //送信コマンドが前回と異なる場合、かつ前回送信時間から0.02sec以上経過した場合のみ出力
-            if ((str_send != str_send_latch) && ((DateTime.Now - dateTime).TotalSeconds > 0.02))
-            {
-                dateTime = DateTime.Now;
-                //デバッグモードの時
-                if (Debug)
+                //If you want to change the Handle state, please access to Ats.Handle
+                //送信コマンド用
+                string str_send = "";
+                //コマンド解析用
+                string str = "";
+                //コマンド連結
+                for (int i = 0; i < outputInfo.outputInfoDataList.Count; i++)
                 {
-                    Console.Write(str_send + "\r\n");
-                }
-                //シリアル通信オープンの時
-                if (serialPort.IsOpen)
-                {
-                    serialPort.Write(str_send + "\r");
+                    str += SendCommandGenerator(outputInfo.outputInfoDataList[i]);
                 }
 
-            }
-            str_send_latch = str_send;
+                str_send = str;
 
+                //送信コマンドが前回と異なる場合、かつ前回送信時間から0.02sec以上経過した場合のみ出力
+                if ((str_send != str_send_latch) && ((DateTime.Now - dateTime).TotalSeconds > 0.02))
+                {
+                    dateTime = DateTime.Now;
+                    //デバッグモードの時
+                    if (Debug)
+                    {
+                        Console.Write(str_send + "\r\n");
+                    }
+                    //シリアル通信オープンの時
+                    if (serialPort.IsOpen)
+                    {
+                        serialPort.Write(str_send + "\r");
+                    }
+
+                }
+                str_send_latch = str_send;
+            }
             return new ExtensionTickResult();
+
         }
 
         //送信コマンド生成
@@ -280,5 +375,6 @@ namespace SerialOutputEx
             }
             return str.Substring(str.Length - len, len);
         }
+
     }
 }
