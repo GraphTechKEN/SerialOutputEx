@@ -7,6 +7,7 @@
 >- BVE5.8と6への両対応化
 >- 車両プラグインへの組込が不要
 >- 既存の設定ファイル(SerialOutput.xml)が利用可能
+>- BVE画面から連動のON/OFFの変更が可能
 
 ## 導入方法
 1. AtsEX(入力デバイスプラグイン版)を[こちら](https://automatic9045.github.io/AtsEX/download/)からインストールします。(exeインストーラ版を推奨)  
