@@ -37,5 +37,10 @@ namespace SerialOutputEx
         /// パネル番号
         /// </summary>
         public int PanelNum { get; set; }
+
+        /// <summary>
+        /// サウンド番号
+        /// </summary>
+        public int SoundNum { get; set; }　//0.2.31217.1 準備
     }
 }

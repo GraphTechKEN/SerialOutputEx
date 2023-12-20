@@ -10,6 +10,8 @@ using BveTypes.ClassWrappers;
 
 using AtsEx.PluginHost.Plugins;
 using AtsEx.PluginHost.Plugins.Extensions;
+using AtsEx.Extensions.ContextMenuHacker;
+using AtsEx.PluginHost;
 
 namespace SerialOutputEx
 {
@@ -17,13 +19,16 @@ namespace SerialOutputEx
     [HideExtensionMain]
     internal class PluginMain : AssemblyPluginBase, IExtension
     {
-        private readonly SerialPort serialPort = new SerialPort();
-        private readonly bool Debug = false;
-        private readonly OutputInfo outputInfo = new OutputInfo();
+        private SerialPort serialPort = new SerialPort();
+        private bool Debug = false;
+        private OutputInfo outputInfo = new OutputInfo();
 
         private string str_send_latch = "";
         private DateTime dateTime;
 
+        private bool flgSerialOutput = true;
+        private bool flgScenarioOpened = false;
+        private bool flgConsoleOpened = false;
 
         [DllImport("kernel32.dll")]
         private static extern bool AllocConsole();
@@ -31,9 +36,95 @@ namespace SerialOutputEx
         [DllImport("kernel32.dll")]
         private static extern bool FreeConsole();
 
+        private ToolStripMenuItem tsiOutput;
+        private ToolStripMenuItem tsiConsole;
+
         public PluginMain(PluginBuilder builder) : base(builder)
         {
+            //0.4.31219.1 追記
+            Extensions.AllExtensionsLoaded += Extensions_AllExtensionsLoaded;
+        }
 
+        private void Extensions_AllExtensionsLoaded(object sender, EventArgs e)
+        {
+            Open();
+
+            tsiOutput = Extensions.GetExtension<IContextMenuHacker>().AddCheckableMenuItem("SerialOutputEx 連動", SerialOutputEx_Change, ContextMenuItemType.CoreAndExtensions);
+            tsiConsole = Extensions.GetExtension<IContextMenuHacker>().AddCheckableMenuItem("デバッグコンソール 表示", DebugConsoleDisp_Change, ContextMenuItemType.CoreAndExtensions);
+
+            if (Debug)
+            {
+                tsiConsole.Checked = true;
+            }
+            if (serialPort.IsOpen)
+            {
+                tsiOutput.Checked = true;
+            }
+
+            //"シナリオを開く"イベント
+            BveHacker.ScenarioOpened += BveHacker_ScenarioOpened;
+
+            //コンテクストメニューを開くイベント
+            BveHacker.MainForm.ContextMenu.Opened += ContextMenu_Opened;
+            //コンテクストメニューのアイテムクリックイベント
+            BveHacker.MainForm.ContextMenu.ItemClicked += ContextMenu_ItemClicked;
+
+            //0.3.31218.1 追記ここまで
+        }
+
+        private void DebugConsoleDisp_Change(object sender, EventArgs e)
+        {
+            if (tsiConsole.Checked)
+            {
+                Debug = true;
+                ConsoleOpen();
+            }
+            else
+            {
+                Debug = false;
+                ConsoleClose();
+            }
+        }
+
+        private void SerialOutputEx_Change(object sender, EventArgs e)
+        {
+            if (tsiOutput.Checked)
+            {
+                Open();
+                flgSerialOutput = true;
+            }
+            else
+            {
+                if (serialPort.IsOpen)
+                {
+                    serialPort.Close();
+                }
+                flgSerialOutput = false;
+            }
+        }
+
+        private void BveHacker_ScenarioOpened(ScenarioOpenedEventArgs e)
+        {
+            flgScenarioOpened = true;
+        }
+
+
+        private void ContextMenu_Opened(object sender, EventArgs e)
+        {
+            tsiOutput.Enabled = !flgScenarioOpened;
+            tsiOutput.Checked = serialPort.IsOpen;
+        }
+
+        private void ContextMenu_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
+        {
+            //シナリオを閉じるメニューをクリックした時のイベント
+            if (e.ClickedItem.Name == "closeToolStripMenuItem")
+            {
+                flgScenarioOpened = false;
+            }
+        }
+        private void Open()
+        {
             string stTarget = System.Reflection.Assembly.GetExecutingAssembly().CodeBase;
             string dllPath = "";
             //ローカルファイルのパスを表すURI
@@ -53,20 +144,39 @@ namespace SerialOutputEx
 
             string dir = Path.GetDirectoryName(dllPath);
             string dirParent = Directory.GetParent(dir).FullName;
-            string path = dir + @"\SerialOutput.xml";
-            string pathParent = dirParent + @"\SerialOutput.xml";
+            string fileName = Path.GetFileNameWithoutExtension(dllPath);　//0.2.31217.1 追記 設定ファイル名をdllと同じとする。
+            string path = dir + @"\" + fileName + ".xml";
+            string pathParent = dirParent + @"\" + fileName + ".xml";
 
             try
             {
                 if (!File.Exists(path))
                 {
                     path = pathParent;
-                    if(!File.Exists(path))
+                    if (!File.Exists(path))
                     {
-                        MessageBox.Show("設定ファイル SerialOutput.xml が見つかりません");
-                        Dispose();
+                        MessageBox.Show("設定ファイル " + fileName + ".xml が見つかりません");　//0.2.31217.1 変更 設定ファイル名をdllと同じとする。
+                    }
+                    else
+                    {
+                        OutputOpen(path);
                     }
                 }
+                else
+                {
+                    OutputOpen(path);
+                }
+
+            }
+            catch (IOException ex)
+            {
+                MessageBox.Show(ex.Message);
+                if (serialPort.IsOpen)
+                {
+                    serialPort.Close();
+                }
+
+
             }
             catch (Exception ex)
             {
@@ -74,6 +184,37 @@ namespace SerialOutputEx
                 Dispose();
             }
 
+            if (Debug && !flgConsoleOpened)
+            {
+                ConsoleOpen();
+            }
+            dateTime = DateTime.Now;
+        }
+
+        private void ConsoleOpen()
+        {
+            /* 参考ページ：C#(Windows Formアプリケーション)でコンソールの表示、非表示、出力方法(Console.WriteLine())
+            * https://github.com/murasuke/AllocConsoleCSharp
+            */
+
+            // Console表示
+            AllocConsole();
+            // コンソールとstdoutの紐づけを行う。無くても初回は出力できるが、表示、非表示を繰り返すとエラーになる。
+            Console.SetOut(new StreamWriter(Console.OpenStandardOutput()) { AutoFlush = true });
+            //コンソールの文字エンコードを指定。これがないとBVE本体からの情報が文字化けする。
+            Console.OutputEncoding = System.Text.Encoding.GetEncoding("utf-8");
+
+            flgConsoleOpened = true;
+        }
+
+        private void ConsoleClose()
+        {
+            FreeConsole();
+            flgConsoleOpened = false;
+        }
+
+        private void OutputOpen(string path)
+        {
             //XmlSerializerオブジェクトを作成
             XmlSerializer serializer = new XmlSerializer(typeof(OutputInfo));
 
@@ -89,34 +230,24 @@ namespace SerialOutputEx
             serialPort.Parity = outputInfo.Parity;
             serialPort.StopBits = outputInfo.StopBits;
             serialPort.DataBits = outputInfo.DataBits;
+            serialPort.WriteTimeout = 1000;
+            serialPort.ReadTimeout = 1000;
             Debug = outputInfo.Debug;
 
-            try
-            {
+            //シリアルポートを開く
+            serialPort.Open();
 
-                serialPort.WriteTimeout = 1000;
-                serialPort.ReadTimeout = 1000;
-                serialPort.Open();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-                Dispose();
-            }
-            if (Debug)
-            {
-                // Console表示
-                AllocConsole();
-                // コンソールとstdoutの紐づけを行う。無くても初回は出力できるが、表示、非表示を繰り返すとエラーになる。
-                Console.SetOut(new StreamWriter(Console.OpenStandardOutput()) { AutoFlush = true });
-                //コンソールの文字エンコードを指定。これがないとBVE本体からの情報が文字化けする。
-                Console.OutputEncoding = System.Text.Encoding.GetEncoding("utf-8");
-            }
-            dateTime = DateTime.Now;
         }
 
         public override void Dispose()
         {
+            //AtsEXを選択解除したときに
+            //コンソールを非表示とする //0.2.31217.1 追記
+            if (Debug || flgConsoleOpened)
+            {
+                ConsoleClose();
+            }
+            //シリアルポートを閉じる
             if (serialPort.IsOpen)
             {
                 serialPort.Close();
@@ -125,38 +256,44 @@ namespace SerialOutputEx
 
         public override TickResult Tick(TimeSpan elapsed)
         {
-            //If you want to change the Handle state, please access to Ats.Handle
-            //送信コマンド用
-            string str_send = "";
-            //コマンド解析用
-            string str = "";
-            //コマンド連結
-            for (int i = 0; i < outputInfo.outputInfoDataList.Count; i++)
+            if (flgSerialOutput)
             {
-                str += SendCommandGenerator(outputInfo.outputInfoDataList[i]);
-            }
-
-            str_send = str;
-
-            //送信コマンドが前回と異なる場合のみ出力
-            if (str_send != str_send_latch && ((DateTime.Now - dateTime).TotalSeconds > 0.02))
-            {
-                dateTime = DateTime.Now;
-                //デバッグモードの時
-                if (Debug)
+                //If you want to change the Handle state, please access to Ats.Handle
+                //送信コマンド用
+                string str_send = "";
+                //コマンド解析用
+                string str = "";
+                //コマンド連結
+                if (outputInfo.outputInfoDataList != null || outputInfo.outputInfoDataList.Count != 0)
                 {
-                    Console.Write(str_send + "\r\n");
-                }
-                //シリアル通信オープンの時
-                if (serialPort.IsOpen)
-                {
-                    serialPort.Write(str_send + "\r");
+                    for (int i = 0; i < outputInfo.outputInfoDataList.Count; i++)
+                    {
+                        str += SendCommandGenerator(outputInfo.outputInfoDataList[i]);
+                    }
                 }
 
-            }
-            str_send_latch = str_send;
+                str_send = str;
 
+                //送信コマンドが前回と異なる場合、かつ前回送信時間から0.02sec以上経過した場合のみ出力
+                if ((str_send != str_send_latch) && ((DateTime.Now - dateTime).TotalSeconds > 0.02))
+                {
+                    dateTime = DateTime.Now;
+                    //デバッグモードの時
+                    if (Debug)
+                    {
+                        Console.Write(str_send + "\r\n");
+                    }
+                    //シリアル通信オープンの時
+                    if (serialPort.IsOpen)
+                    {
+                        serialPort.Write(str_send + "\r");
+                    }
+
+                }
+                str_send_latch = str_send;
+            }
             return new ExtensionTickResult();
+
         }
 
         //送信コマンド生成
@@ -172,35 +309,35 @@ namespace SerialOutputEx
             {
 
                 case 0://列車位置
-                    str = string.Format(format, (int)(BveHacker.Scenario.LocationManager.Location * Math.Pow(10, _data.Pow)));
+                    str = Right(string.Format(format, (int)(BveHacker.Scenario.LocationManager.Location * Math.Pow(10, _data.Pow))), _data.Digit);
                     break;
 
                 case 1://列車速度
-                    str = string.Format(format, (int)(Math.Abs(BveHacker.Scenario.LocationManager.SpeedMeterPerSecond * 3.6) * Math.Pow(10, _data.Pow)));
+                    str = Right(string.Format(format, (int)(Math.Abs(BveHacker.Scenario.LocationManager.SpeedMeterPerSecond * 3.6) * Math.Pow(10, _data.Pow))), _data.Digit);
                     break;
 
                 case 2://現在時刻
-                    str = string.Format(format, (int)((int)BveHacker.Scenario.TimeManager.Time.TotalMilliseconds * Math.Pow(10, _data.Pow)));
+                    str = Right(string.Format(format, (int)((int)BveHacker.Scenario.TimeManager.Time.TotalMilliseconds * Math.Pow(10, _data.Pow))), _data.Digit);
                     break;
 
                 case 3://ブレーキシリンダ圧力
-                    str = string.Format(format, (int)(vehicleStateStore.BcPressure[0] * Math.Pow(10, _data.Pow)));
+                    str = Right(string.Format(format, (int)(vehicleStateStore.BcPressure[0] * Math.Pow(10, _data.Pow))), _data.Digit);
                     break;
 
                 case 4://元空気溜め圧力
-                    str = string.Format(format, (int)(vehicleStateStore.MrPressure[0] * Math.Pow(10, _data.Pow)));
+                    str = Right(string.Format(format, (int)(vehicleStateStore.MrPressure[0] * Math.Pow(10, _data.Pow))), _data.Digit);
                     break;
 
                 case 5://ツリアイ空気溜め圧力
-                    str = string.Format(format, (int)(vehicleStateStore.ErPressure[0] * Math.Pow(10, _data.Pow)));
+                    str = Right(string.Format(format, (int)(vehicleStateStore.ErPressure[0] * Math.Pow(10, _data.Pow))), _data.Digit);
                     break;
 
                 case 6://ブレーキ管圧力
-                    str = string.Format(format, (int)(vehicleStateStore.BpPressure[0] * Math.Pow(10, _data.Pow)));
+                    str = Right(string.Format(format, (int)(vehicleStateStore.BpPressure[0] * Math.Pow(10, _data.Pow))), _data.Digit);
                     break;
 
                 case 7://直通管圧力
-                    str = string.Format(format, (int)(vehicleStateStore.SapPressure[0] * Math.Pow(10, _data.Pow)));
+                    str = Right(string.Format(format, (int)(vehicleStateStore.SapPressure[0] * Math.Pow(10, _data.Pow))), _data.Digit);
                     break;
 
                 case 8://電流
@@ -213,19 +350,19 @@ namespace SerialOutputEx
                     {
                         sign = "+";
                     }
-                    str = sign + string.Format(format, (int)(vehicleStateStore.Current[0] * Math.Pow(10, _data.Pow)));
+                    str = Right(sign + string.Format(format, (int)(vehicleStateStore.Current[0] * Math.Pow(10, _data.Pow))), _data.Digit + 1);
                     break;
 
                 case 9://ブレーキノッチ
-                    str = string.Format(format, handles.BrakeNotch);
+                    str = Right(string.Format(format, handles.BrakeNotch), _data.Digit);
                     break;
 
                 case 10://力行ノッチ
-                    str = string.Format(format, handles.PowerNotch);
+                    str = Right(string.Format(format, handles.PowerNotch), _data.Digit);
                     break;
 
                 case 11://レバーサ位置
-                    str = string.Format(format, handles.ReverserPosition);
+                    str = handles.ReverserPosition.ToString();
                     break;
 
                 case 12://ドア状態
@@ -233,11 +370,15 @@ namespace SerialOutputEx
                     break;
 
                 case 13://パネル状態
-                    str = ats.PanelArray[_data.PanelNum].ToString("0");
+                    str = Right(ats.PanelArray[_data.PanelNum].ToString(), 1);
                     break;
 
                 case 14://固定文字列
                     str = _data.Value;
+                    break;
+
+                case 15://サウンド状態 　//0.2.31217.1 準備
+                    str = Right(ats.SoundArray[_data.SoundNum].ToString(), 1);
                     break;
 
                 default:
@@ -247,5 +388,24 @@ namespace SerialOutputEx
 
             return str;
         }
+
+        //文字列を末尾から指定文字数切り取るメソッド 0.2.31217.1 追加
+        public static string Right(string str, int len)
+        {
+            if (len < 0)
+            {
+                throw new ArgumentException("引数'len'は0以上でなければなりません。");
+            }
+            if (str == null)
+            {
+                return "";
+            }
+            if (str.Length <= len)
+            {
+                return str;
+            }
+            return str.Substring(str.Length - len, len);
+        }
+
     }
 }
