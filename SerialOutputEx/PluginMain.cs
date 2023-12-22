@@ -26,9 +26,9 @@ namespace SerialOutputEx
         private string str_send_latch = "";
         private DateTime dateTime;
 
-        private bool flgSerialOutput = true;
         private bool flgScenarioOpened = false;
         private bool flgConsoleOpened = false;
+        private bool flgAnotherPortOpen = false;
 
         [DllImport("kernel32.dll")]
         private static extern bool AllocConsole();
@@ -38,6 +38,9 @@ namespace SerialOutputEx
 
         private ToolStripMenuItem tsiOutput;
         private ToolStripMenuItem tsiConsole;
+        private ToolStripMenuItem tsiPorts;
+
+        private string portName = "";
 
         public PluginMain(PluginBuilder builder) : base(builder)
         {
@@ -47,8 +50,7 @@ namespace SerialOutputEx
 
         private void Extensions_AllExtensionsLoaded(object sender, EventArgs e)
         {
-            Open();
-
+            string openedPortName = Open(portName);
             tsiOutput = Extensions.GetExtension<IContextMenuHacker>().AddCheckableMenuItem("SerialOutputEx 連動", SerialOutputEx_Change, ContextMenuItemType.CoreAndExtensions);
             tsiConsole = Extensions.GetExtension<IContextMenuHacker>().AddCheckableMenuItem("デバッグコンソール 表示", DebugConsoleDisp_Change, ContextMenuItemType.CoreAndExtensions);
 
@@ -72,6 +74,48 @@ namespace SerialOutputEx
             //0.3.31218.1 追記ここまで
         }
 
+        private void TsiPorts_Click(object sender, EventArgs e)
+        {
+            // sender にはクリックされたメニューの ToolStripMenuItem が入っている
+            // ポートを開きなおす処理
+            ToolStripMenuItem mi = (ToolStripMenuItem)sender;
+            if (mi.Text != serialPort.PortName)
+            {
+                try
+                {
+                    if (serialPort.IsOpen)
+                    {
+                        serialPort.Close();
+                    }
+                    portName = mi.Text;
+                    flgAnotherPortOpen = true;
+                    Open(portName);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+            }
+        }
+
+        private void SerialOutputEx_Change(object sender, EventArgs e)
+        {
+            if (tsiOutput.Checked)
+            {
+                if (!serialPort.IsOpen)
+                {
+                    Open(portName);
+                }
+            }
+            else
+            {
+                if (serialPort.IsOpen)
+                {
+                    serialPort.Close();
+                }
+            }
+        }
+
         private void DebugConsoleDisp_Change(object sender, EventArgs e)
         {
             if (tsiConsole.Checked)
@@ -86,22 +130,6 @@ namespace SerialOutputEx
             }
         }
 
-        private void SerialOutputEx_Change(object sender, EventArgs e)
-        {
-            if (tsiOutput.Checked)
-            {
-                Open();
-                flgSerialOutput = true;
-            }
-            else
-            {
-                if (serialPort.IsOpen)
-                {
-                    serialPort.Close();
-                }
-                flgSerialOutput = false;
-            }
-        }
 
         private void BveHacker_ScenarioOpened(ScenarioOpenedEventArgs e)
         {
@@ -113,6 +141,34 @@ namespace SerialOutputEx
         {
             tsiOutput.Enabled = !flgScenarioOpened;
             tsiOutput.Checked = serialPort.IsOpen;
+
+            tsiOutput.DropDownItems.Clear();
+            foreach (var _portName in SerialPort.GetPortNames())
+            {
+                try
+                {
+                    tsiPorts = new ToolStripMenuItem(_portName);
+
+                    // クリックイベントを追加
+                    tsiPorts.Click += TsiPorts_Click;
+                    //使用中ポートにチェック、Enableとする
+                    if ((_portName == serialPort.PortName) && serialPort.IsOpen)
+                    {
+                        tsiPorts.Checked = true;
+                        tsiPorts.Enabled = false;
+                    }
+                    else
+                    {
+                        tsiPorts.Checked = false;
+                        tsiPorts.Enabled = true;
+                    }
+                    tsiOutput.DropDownItems.Add(tsiPorts);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+            }
         }
 
         private void ContextMenu_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
@@ -123,7 +179,7 @@ namespace SerialOutputEx
                 flgScenarioOpened = false;
             }
         }
-        private void Open()
+        private string Open(string portName)
         {
             string stTarget = System.Reflection.Assembly.GetExecutingAssembly().CodeBase;
             string dllPath = "";
@@ -159,18 +215,18 @@ namespace SerialOutputEx
                     }
                     else
                     {
-                        OutputOpen(path);
+                        portName = OutputOpen(path, portName);
                     }
                 }
                 else
                 {
-                    OutputOpen(path);
+                    portName = OutputOpen(path, portName);
                 }
 
             }
             catch (IOException ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show("IOの例外:" + ex.Message);
                 if (serialPort.IsOpen)
                 {
                     serialPort.Close();
@@ -180,7 +236,7 @@ namespace SerialOutputEx
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show("例外:" + ex.Message);
                 Dispose();
             }
 
@@ -189,6 +245,7 @@ namespace SerialOutputEx
                 ConsoleOpen();
             }
             dateTime = DateTime.Now;
+            return portName;
         }
 
         private void ConsoleOpen()
@@ -213,7 +270,7 @@ namespace SerialOutputEx
             flgConsoleOpened = false;
         }
 
-        private void OutputOpen(string path)
+        private string OutputOpen(string path , string _portName)
         {
             //XmlSerializerオブジェクトを作成
             XmlSerializer serializer = new XmlSerializer(typeof(OutputInfo));
@@ -224,8 +281,14 @@ namespace SerialOutputEx
             //XMLファイルから読み込み、逆シリアル化する
             outputInfo = (OutputInfo)serializer.Deserialize(reader);
             reader.Close();
-
-            serialPort.PortName = "COM" + outputInfo.PortNum.ToString();
+            if (!flgAnotherPortOpen || _portName == "")
+            {
+                serialPort.PortName = "COM" + outputInfo.PortNum.ToString();
+            }
+            else
+            {
+                serialPort.PortName = _portName;
+            }
             serialPort.BaudRate = outputInfo.BaudRate;
             serialPort.Parity = outputInfo.Parity;
             serialPort.StopBits = outputInfo.StopBits;
@@ -236,6 +299,8 @@ namespace SerialOutputEx
 
             //シリアルポートを開く
             serialPort.Open();
+
+            return serialPort.PortName;
 
         }
 
@@ -256,7 +321,7 @@ namespace SerialOutputEx
 
         public override TickResult Tick(TimeSpan elapsed)
         {
-            if (flgSerialOutput)
+            if (serialPort.IsOpen)
             {
                 //If you want to change the Handle state, please access to Ats.Handle
                 //送信コマンド用
