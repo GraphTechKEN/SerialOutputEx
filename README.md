@@ -13,9 +13,9 @@
 AtsEXについては[こちら](https://automatic9045.github.io/AtsEX/)を参照してください。(おーとま様AtsEXページ)
 
 2. SerialOutputExをダウンロードします。
-  [こちら](https://github.com/GraphTechKEN/SerialOutputEx/releases)最新版(Lates)下部のAssetsから、「SerialOutputEx.dll」をダウンロードします。
+  [こちら](https://github.com/GraphTechKEN/SerialOutputEx/releases)最新版リリース下部のAssetsから、「SerialOutputEx.dll」をダウンロードします。
 > [!CAUTION]
-> `SerialOutput.dllのゾーン識別子を削除してください。(ファイルを右クリックし、プロパティ内下部の許可をチェック)`
+> `ダウンロード後、SerialOutput.dllのゾーン識別子を削除してください。(ファイルを右クリックし、プロパティ内下部の許可をチェック)`
 
 3. ファイルの設置  
 AtsEXをインストールしたフォルダ内に、
