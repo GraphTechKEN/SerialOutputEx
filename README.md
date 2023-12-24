@@ -34,7 +34,8 @@ AtsEXをインストールしたフォルダ内に、
 バージョン番号とその直下にExtentionというフォルダがあります。  
 > - `例：`
 > - C:\Program Files\mackoy\BveTs6\Input Devices\AtsEx\1.0\Extentions
-> - C:\Users\Public\Documents\AtsEx\1.0\Extensions など  
+> - C:\Users\Public\Documents\AtsEx\1.0\Extensions など
+> ![ExtentionsFiles](https://github.com/GraphTechKEN/SerialOutputEx/blob/image/ExtentionsFiles.png)
 
 この中フォルダ内に、
 > - SerialOutputEx.dll
