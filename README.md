@@ -14,7 +14,7 @@
 > ![コンソール表示](https://github.com/GraphTechKEN/SerialOutputEx/blob/image/Console.png "コンソール表示")  
 
 ## 導入方法
-1. AtsEX(入力デバイスプラグイン版)を[こちら](https://automatic905.github.io/AtsEX/download/)からインストールします。(exeインストーラ版を推奨)  
+1. AtsEX(入力デバイスプラグイン版)を<A href = "https://automatic9045.github.io/AtsEX/download/" target="_blank">こちら</A>からインストールします。(exeインストーラ版を推奨)  
 AtsEXについては[こちら](https://automatic9045.github.io/AtsEX/)を参照してください。(おーとま様AtsEXページ)
 
 2. SerialOutputExをダウンロードします
