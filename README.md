@@ -35,13 +35,12 @@ AtsEXをインストールしたフォルダ内に、
 > - `例：`
 > - C:\Program Files\mackoy\BveTs6\Input Devices\AtsEx\1.0\Extentions
 > - C:\Users\Public\Documents\AtsEx\1.0\Extensions など
-> ![ExtentionsFiles](https://github.com/GraphTechKEN/SerialOutputEx/blob/image/ExtentionsFiles.png)
-
 この中フォルダ内に、
 > - SerialOutputEx.dll
-> - SerialOutputEx.xml(設定ファイル、既存のxml設定ファイルがある場合はSerialOutputEx.xmlに変更します。新規生成方法は[下記の通り](#設定ファイルの生成方法))
-> - シリアル出力エディタ.exe(設定ファイルを編集するソフトウェア)  
-  を設置します。  
+> - SerialOutputEx.xml(設定ファイル、既存のxml設定ファイルがある場合はSerialOutputEx.xmlに変更します。  新規生成方法は[下記の通り](#設定ファイルの生成方法))
+> - シリアル出力エディタ.exe(設定ファイルを編集するソフトウェア)  を設置します。
+> 設置例
+> ![ExtentionsFiles](https://github.com/GraphTechKEN/SerialOutputEx/blob/image/ExtentionsFiles.png)  
 
 5. BVEを起動し、ホーム画面の右クリック->設定メニュー->入力プラグイン->AtsEX にチェックマークを入れる(次回起動時以降は省略)
 ![AtsEX設定](https://github.com/GraphTechKEN/SerialOutputEx/blob/image/AtsExCheck.png "AtsEX設定")  
