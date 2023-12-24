@@ -43,7 +43,7 @@ AtsEXをインストールしたフォルダ内に、
   を設置します。  
 
 5. BVEを起動し、ホーム画面の右クリック->設定メニュー->入力プラグイン->AtsEX にチェックマークを入れる(次回起動時以降は省略)
-[AtsEX設定](https://github.com/GraphTechKEN/SerialOutputEx/blob/image/AtsExCheck.png "AtsEX設定")  
+![AtsEX設定](https://github.com/GraphTechKEN/SerialOutputEx/blob/image/AtsExCheck.png "AtsEX設定")  
 
 7. 外部(連動)機器が正しく接続され、ポートの設定が正しければ、連動動作が開始されます。(たぶん...バグ報告お待ちしております)
 
