@@ -8,16 +8,22 @@
 >- 既存の設定ファイルが利用可能
 >- BVE画面から連動のON/OFFの変更が可能
 
-![コンテクストメニュー]((https://github.com/GraphTechKEN/images/blob/main/SerialOutputEx/ContextMenu.png) "コンテクストメニュー")
+コンテクストメニューに追加されます。  
+![コンテクストメニュー](https://github.com/GraphTechKEN/SerialOutputEx/blob/image/ContextMenu.png "コンテクストメニュー")  
+従来通りデバッグ画面も表示できます。  
+![コンソール表示](https://github.com/GraphTechKEN/SerialOutputEx/blob/image/Console.png "コンソール表示")  
 
 ## 導入方法
-1. AtsEX(入力デバイスプラグイン版)を[こちら](https://automatic9045.github.io/AtsEX/download/)からインストールします。(exeインストーラ版を推奨)  
+1. AtsEX(入力デバイスプラグイン版)を[こちら](https://automatic905.github.io/AtsEX/download/)からインストールします。(exeインストーラ版を推奨)  
 AtsEXについては[こちら](https://automatic9045.github.io/AtsEX/)を参照してください。(おーとま様AtsEXページ)
 
-2. SerialOutputExをダウンロードします。
+2. SerialOutputExをダウンロードします
   [こちら](https://github.com/GraphTechKEN/SerialOutputEx/releases)最新版リリース下部のAssetsから、「SerialOutputEx.dll」をダウンロードします。
 > [!CAUTION]
 > `ダウンロード後、SerialOutput.dllのゾーン識別子を削除してください。(ファイルを右クリックし、プロパティ内下部の許可をチェック)`
+
+3. SerialOutputをダウンロードします
+SerialOutputプラグイン(シリアル出力エディタ.exeを含む)を[ダウンロード](https://twitter.com/ED67900_5/status/1112336446994542592)します。(E67900-5様 Xサイト)
 
 3. ファイルの設置  
 AtsEXをインストールしたフォルダ内に、
@@ -28,26 +34,24 @@ AtsEXをインストールしたフォルダ内に、
 
 この中フォルダ内に、
   - SerialOutputEx.dll
-  - SerialOutputEx.xml(既存設定ファイル名称をSerialOutputEx.xmlに変更する)
-  - (任意)シリアル出力エディタ.exe(上の設定ファイルを編集するソフトウェア、入手方法は[下記](#シリアル出力設定ファイルの生成方法))  
+  - SerialOutputEx.xml(設定ファイル、この名称をSerialOutputEx.xmlに変更する。生成方法は[下記の通り](#設定ファイルの生成方法))
+  - シリアル出力エディタ.exe(設定ファイルを編集するソフトウェア)  
   を設置します。  
 
 4. BVEを起動し、設定メニューの入力プラグインのAtsEXにチェックマークを入れる(次回起動時以降は省略)
 
-5. 外部(連動)機器が正しく接続され、ポートの設定が正しければ、連動動作が開始されます。(たぶん...)
+5. 外部(連動)機器が正しく接続され、ポートの設定が正しければ、連動動作が開始されます。(たぶん...バグ報告お待ちしております)
 
-## シリアル出力設定ファイルの生成方法
-1. SerialOutputプラグイン(シリアル出力エディタ.exeを含む)を[ダウンロード](https://twitter.com/ED67900_5/status/1112336446994542592)します。(E67900-5様 Xサイト)
+## 設定ファイルの生成方法
+1. シリアル出力エディタを開き、出力先のポート情報と、出力したい項目の順番を選択します。
 
-2. シリアル出力エディタを開き、出力先のポート情報と、出力したい項目の順番を選択します。
-
-3. 保存をクリックすると、設定するxmlファイルを生成することができます。この時の名称は「SerialOutputEx.xml」(プラグイン名と拡張子よりも前と同じ)としてください。
+2. 保存をクリックすると、設定するxmlファイルを生成することができます。この時の名称は「SerialOutputEx.xml」(プラグイン名と拡張子よりも前と同じ)としてください。
 
 ### 暫定版(将来的にやりたいこと)
 - [x] SerialOutput.xml設定ファイルフォーマットに対応
 - [x] 出力電文のHEX出力
 - [ ] 出力電文のバイナリ対応
-- [ ] サウンド出力対応
+- [ ] サウンド出力対応(準備中)
 
 > [!WARNING]
 > `ご使用は自己責任でお願いいたします。本内容による損害等については一切の責任を負いません。`
@@ -59,3 +63,5 @@ AtsEXをインストールしたフォルダ内に、
 
 本プラグインはおーとま様のAtsEXの機能拡張を利用しております。  
 この場を借りて、厚く御礼申し上げます。
+
+またBVE開発に携わられている皆さま、日頃よりご指導いただいている皆さまに、心より感謝申し上げます。
