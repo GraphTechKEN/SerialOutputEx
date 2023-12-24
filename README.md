@@ -24,6 +24,7 @@
   [こちら](https://github.com/GraphTechKEN/SerialOutputEx/releases)最新版リリース下部のAssetsから、「SerialOutputEx.dll」をダウンロードします。
 > [!CAUTION]
 > `ダウンロード後、SerialOutput.dllのゾーン識別子を削除してください。(ファイルを右クリックし、プロパティ内下部の許可をチェック)`
+> ![識別子の削除](https://github.com/GraphTechKEN/SerialOutputEx/blob/image/Property.png "識別子の削除")  
 
 3. SerialOutputをダウンロードします
 SerialOutputプラグイン(シリアル出力エディタ.exeを含む)を[ダウンロード](https://twitter.com/ED67900_5/status/1112336446994542592)します。(E67900-5様 Xサイト)
@@ -36,9 +37,9 @@ AtsEXをインストールしたフォルダ内に、
 > - C:\Users\Public\Documents\AtsEx\1.0\Extensions など  
 
 この中フォルダ内に、
-  - SerialOutputEx.dll
-  - SerialOutputEx.xml(設定ファイル、既存のxml設定ファイルがある場合はSerialOutputEx.xmlに変更します。新規生成方法は[下記の通り](#設定ファイルの生成方法))
-  - シリアル出力エディタ.exe(設定ファイルを編集するソフトウェア)  
+> - SerialOutputEx.dll
+> - SerialOutputEx.xml(設定ファイル、既存のxml設定ファイルがある場合はSerialOutputEx.xmlに変更します。新規生成方法は[下記の通り](#設定ファイルの生成方法))
+> - シリアル出力エディタ.exe(設定ファイルを編集するソフトウェア)  
   を設置します。  
 
 5. BVEを起動し、設定メニューの入力プラグインのAtsEXにチェックマークを入れる(次回起動時以降は省略)
