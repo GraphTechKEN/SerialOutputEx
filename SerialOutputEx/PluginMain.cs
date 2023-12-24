@@ -39,13 +39,39 @@ namespace SerialOutputEx
         private ToolStripMenuItem tsiOutput;
         private ToolStripMenuItem tsiConsole;
         private ToolStripMenuItem tsiPorts;
+        private ToolStripMenuItem tsiOpenEditor;
 
         private string portName = "";
+        private string editorPath = "";
 
         public PluginMain(PluginBuilder builder) : base(builder)
         {
             //0.4.31219.1 追記
             Extensions.AllExtensionsLoaded += Extensions_AllExtensionsLoaded;
+
+            string stTarget = System.Reflection.Assembly.GetExecutingAssembly().CodeBase;
+            string dllPath = "";
+            //ローカルファイルのパスを表すURI
+            string uriPath = stTarget;
+            //Uriオブジェクトを作成する
+            Uri u = new Uri(uriPath);
+            //変換するURIがファイルを表していることを確認する
+            if (u.IsFile)
+            {
+                //Windows形式のパス表現に変換する
+                dllPath = u.LocalPath + Uri.UnescapeDataString(u.Fragment);
+            }
+            else
+            {
+                MessageBox.Show("ファイルURIではありません。");
+            }
+
+            string dir = Path.GetDirectoryName(dllPath);
+            string fileName = "シリアル出力エディタ";
+            string path = dir + @"\" + fileName + ".exe";
+
+            editorPath = path;
+
         }
 
         private void Extensions_AllExtensionsLoaded(object sender, EventArgs e)
@@ -53,6 +79,7 @@ namespace SerialOutputEx
             string openedPortName = Open(portName);
             tsiOutput = Extensions.GetExtension<IContextMenuHacker>().AddCheckableMenuItem("SerialOutputEx 連動", SerialOutputEx_Change, ContextMenuItemType.CoreAndExtensions);
             tsiConsole = Extensions.GetExtension<IContextMenuHacker>().AddCheckableMenuItem("デバッグコンソール 表示", DebugConsoleDisp_Change, ContextMenuItemType.CoreAndExtensions);
+            tsiOpenEditor = Extensions.GetExtension<IContextMenuHacker>().AddClickableMenuItem("SerialOutputEx 設定", SerialOutputExEdit_Open, ContextMenuItemType.CoreAndExtensions);
 
             if (Debug)
             {
@@ -72,6 +99,33 @@ namespace SerialOutputEx
             BveHacker.MainForm.ContextMenu.ItemClicked += ContextMenu_ItemClicked;
 
             //0.3.31218.1 追記ここまで
+
+            try
+            {
+                if (!File.Exists(editorPath))
+                {
+                    tsiOpenEditor.Enabled = false;
+                }
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("例外:" + ex.Message);
+                Dispose();
+            }
+        }
+
+        private void SerialOutputExEdit_Open(object sender, EventArgs e)
+        {
+            try
+            {
+                System.Diagnostics.Process p = System.Diagnostics.Process.Start(editorPath);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("例外:" + ex.Message);
+                Dispose();
+            }
         }
 
         private void TsiPorts_Click(object sender, EventArgs e)
@@ -199,24 +253,14 @@ namespace SerialOutputEx
             }
 
             string dir = Path.GetDirectoryName(dllPath);
-            string dirParent = Directory.GetParent(dir).FullName;
             string fileName = Path.GetFileNameWithoutExtension(dllPath);　//0.2.31217.1 追記 設定ファイル名をdllと同じとする。
             string path = dir + @"\" + fileName + ".xml";
-            string pathParent = dirParent + @"\" + fileName + ".xml";
 
             try
             {
                 if (!File.Exists(path))
                 {
-                    path = pathParent;
-                    if (!File.Exists(path))
-                    {
-                        MessageBox.Show("設定ファイル " + fileName + ".xml が見つかりません");　//0.2.31217.1 変更 設定ファイル名をdllと同じとする。
-                    }
-                    else
-                    {
-                        portName = OutputOpen(path, portName);
-                    }
+                    MessageBox.Show("設定ファイル " + fileName + ".xml が見つかりません");　//0.2.31217.1 変更 設定ファイル名をdllと同じとする。
                 }
                 else
                 {
