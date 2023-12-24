@@ -7,11 +7,11 @@
 >- 車両プラグインへの組込が不要
 >- 既存の設定ファイルが利用可能
 >- BVE画面から連動のON/OFFの変更が可能
-
-コンテクストメニューに追加されます。  
-![コンテクストメニュー](https://github.com/GraphTechKEN/SerialOutputEx/blob/image/ContextMenu.png "コンテクストメニュー")  
-従来通りデバッグ画面も表示できます。  
-![コンソール表示](https://github.com/GraphTechKEN/SerialOutputEx/blob/image/Console.png "コンソール表示")  
+>   
+> コンテクストメニューに追加されます。  
+> ![コンテクストメニュー](https://github.com/GraphTechKEN/SerialOutputEx/blob/image/ContextMenu.png "コンテクストメニュー")  
+> 従来通りデバッグ画面も表示できます。  
+> ![コンソール表示](https://github.com/GraphTechKEN/SerialOutputEx/blob/image/Console.png "コンソール表示")  
 
 ## 導入方法
 1. AtsEX(入力デバイスプラグイン版)を[こちら](https://automatic905.github.io/AtsEX/download/)からインストールします。(exeインストーラ版を推奨)  
