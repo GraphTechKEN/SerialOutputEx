@@ -8,6 +8,8 @@
 >- 既存の設定ファイルが利用可能
 >- BVE画面から連動のON/OFFの変更が可能
 
+![コンテクストメニュー]((https://github.com/GraphTechKEN/images/blob/main/SerialOutputEx/ContextMenu.png) "コンテクストメニュー")
+
 ## 導入方法
 1. AtsEX(入力デバイスプラグイン版)を[こちら](https://automatic9045.github.io/AtsEX/download/)からインストールします。(exeインストーラ版を推奨)  
 AtsEXについては[こちら](https://automatic9045.github.io/AtsEX/)を参照してください。(おーとま様AtsEXページ)
