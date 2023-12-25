@@ -23,7 +23,7 @@
 2. SerialOutputExをダウンロードします
   [こちら](https://github.com/GraphTechKEN/SerialOutputEx/releases)最新版リリース下部のAssetsから、「SerialOutputEx.dll」をダウンロードします。
 > [!CAUTION]
-> `ダウンロード後、SerialOutput.dllのゾーン識別子を削除してください。(ファイルを右クリックし、プロパティ内下部の許可をチェック)  
+> `ダウンロード後、SerialOutput.dllのゾーン識別子を削除してください。(ファイルを右クリックし、プロパティ内下部の許可をチェック)`  
 > ![識別子の削除](https://github.com/GraphTechKEN/SerialOutputEx/blob/image/Property.png "識別子の削除")  
 
 3. SerialOutputをダウンロードします
@@ -66,7 +66,7 @@ AtsEXをインストールしたフォルダ内に、
 - [ ] xml設定ファイルの簡易切り替え
 
 > [!WARNING]
-> `ご使用は自己責任でお願いいたします。本内容による損害等については一切の責任を負いかねます。
+> `ご使用は自己責任でお願いいたします。本内容による損害等については一切の責任を負いかねます。`
 
 ## 参考
 Arduinoなどのマイコンなどで連動機器を開発する際は[こちら](https://github.com/GraphTechKEN/MC53_ME38_BVE_VM#mc53-me38_bve_vm)を参考にしていただくと
