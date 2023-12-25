@@ -23,7 +23,7 @@
 2. SerialOutputExをダウンロードします
   [こちら](https://github.com/GraphTechKEN/SerialOutputEx/releases)最新版リリース下部のAssetsから、「SerialOutputEx.dll」をダウンロードします。
 > [!CAUTION]
-> `ダウンロード後、SerialOutput.dllのゾーン識別子を削除してください。(ファイルを右クリックし、プロパティ内下部の許可をチェック)`  
+> `ダウンロード後、SerialOutputEx.dllのゾーン識別子を削除してください。(ファイルを右クリックし、プロパティ内下部の許可をチェック)`  
 > ![識別子の削除](https://github.com/GraphTechKEN/SerialOutputEx/blob/image/Property.png "識別子の削除")  
 
 3. SerialOutputをダウンロードします
