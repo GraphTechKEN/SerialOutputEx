@@ -422,7 +422,7 @@ namespace SerialOutputEx
                     break;
 
                 case 1://列車速度
-                    str = Right(string.Format(format, (int)(Math.Abs(BveHacker.Scenario.LocationManager.SpeedMeterPerSecond * 3.6) * Math.Pow(10, _data.Pow))), _data.Digit);
+                    str = Right(string.Format(format, (int)(Math.Abs(vehicleStateStore.Speed[0]) * Math.Pow(10, _data.Pow))), _data.Digit);
                     break;
 
                 case 2://現在時刻
