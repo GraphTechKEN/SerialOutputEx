@@ -479,7 +479,8 @@ namespace SerialOutputEx
                     break;
 
                 case 13://パネル状態
-                    str = Right(ats.PanelArray[_data.PanelNum].ToString(), 1);
+                    //str = Right(ats.PanelArray[_data.PanelNum].ToString(), 1);
+                    str = Right(string.Format(format, (int)((ats.PanelArray[_data.PanelNum]))), _data.Digit);
                     break;
 
                 case 14://固定文字列
