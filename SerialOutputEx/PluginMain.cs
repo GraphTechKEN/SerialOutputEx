@@ -154,12 +154,9 @@ namespace SerialOutputEx
 
         private void SerialOutputEx_Change(object sender, EventArgs e)
         {
-            if (tsiOutput.Checked)
+            if (tsiOutput.Checked && !serialPort.IsOpen && portName != "" )
             {
-                if (!serialPort.IsOpen)
-                {
-                    Open(portName);
-                }
+                Open(portName);
             }
             else
             {
