@@ -154,9 +154,12 @@ namespace SerialOutputEx
 
         private void SerialOutputEx_Change(object sender, EventArgs e)
         {
-            if (tsiOutput.Checked && !serialPort.IsOpen && portName != "" )
+            if (tsiOutput.Checked)
             {
-                Open(portName);
+                if (!serialPort.IsOpen)
+                {
+                    Open(portName);
+                }
             }
             else
             {
@@ -464,20 +467,36 @@ namespace SerialOutputEx
                     break;
 
                 case 10://力行ノッチ
-                    str = Right(string.Format(format, handles.PowerNotch), _data.Digit);
+                    string prefix = "N";
+                    if (handles.PowerNotch > 0)
+                    {
+                        prefix = "P";
+                    }
+                    else if (handles.PowerNotch < 0)
+                    {
+                        prefix = "H";
+                    }
+                    str = prefix + Right(string.Format(format, Math.Abs(handles.PowerNotch)), _data.Digit);
                     break;
 
                 case 11://レバーサ位置
-                    str = handles.ReverserPosition.ToString();
+                    str = "N";
+                    if (handles.ReverserPosition > 0)
+                    {
+                        str = "F";
+                    }
+                    else if (handles.ReverserPosition < 0)
+                    {
+                        str = "B";
+                    }
                     break;
-
+                    
                 case 12://ドア状態
                     str = BveHacker.Scenario.Vehicle.Doors.AreAllClosingOrClosed ? "0" : "1";
                     break;
 
                 case 13://パネル状態
-                    //str = Right(ats.PanelArray[_data.PanelNum].ToString(), 1);
-                    str = Right(string.Format(format, (int)((ats.PanelArray[_data.PanelNum]))), _data.Digit);
+                    str = Right(string.Format(format, (int)(ats.PanelArray[_data.PanelNum])), _data.Digit);
                     break;
 
                 case 14://固定文字列

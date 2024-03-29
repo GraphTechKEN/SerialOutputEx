@@ -81,10 +81,9 @@
     <Reference Include="FastMember, Version=1.0.31106.1, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\AtsEx.PluginHost.1.0.0-rc3\lib\FastMember.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.VisualStudio.DebuggerVisualizers, Version=17.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+    <Reference Include="System">
       <Private>False</Private>
     </Reference>
-    <Reference Include="System" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.IO.Ports, Version=7.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.IO.Ports.7.0.0\lib\net462\System.IO.Ports.dll</HintPath>
@@ -122,8 +121,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>
-    </PostBuildEvent>
+    <PostBuildEvent>xcopy /y "$(TargetPath)" C:\Users\Public\Documents\AtsEx\1.0\Extensions</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <DllExportIdent>65C8A9CF-CDA3-4651-82A2-EF4D34F5721F</DllExportIdent>
