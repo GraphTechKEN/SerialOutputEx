@@ -12,6 +12,7 @@ using AtsEx.PluginHost.Plugins;
 using AtsEx.PluginHost.Plugins.Extensions;
 using AtsEx.Extensions.ContextMenuHacker;
 using AtsEx.PluginHost;
+using System.Text;
 
 namespace SerialOutputEx
 {
@@ -19,7 +20,9 @@ namespace SerialOutputEx
     [HideExtensionMain]
     internal class PluginMain : AssemblyPluginBase, IExtension
     {
-        private SerialPort serialPort = new SerialPort();
+
+        private SerialPort serialPort;
+        
         private bool Debug = false;
         private OutputInfo outputInfo = new OutputInfo();
 
@@ -27,6 +30,9 @@ namespace SerialOutputEx
         private DateTime dateTime;
 
         private bool flgScenarioOpened = false;
+
+        private bool flgFirstSend = false;
+
         private bool flgConsoleOpened = false;
         private bool flgAnotherPortOpen = false;
 
@@ -40,12 +46,23 @@ namespace SerialOutputEx
         private ToolStripMenuItem tsiConsole;
         private ToolStripMenuItem tsiPorts;
         private ToolStripMenuItem tsiOpenEditor;
+        private ToolStripMenuItem tsiStartingNotchSet;
+        private ToolStripMenuItem tsiAutoBrakeSet;
+        private ToolStripMenuItem tsiAutoNotchFit;
 
         private string portName = "";
         private string editorPath = "";
 
+        private bool IsStartingNotchSet = false;
+
+        private bool flgAutoBrakeSetChange = false;
+        private bool flgAutoNotchFitChange = false;
+        private bool IsUseAutoBrake = false;
+        private bool IsUseAutoNotchFit = false;
+
         public PluginMain(PluginBuilder builder) : base(builder)
         {
+
             //0.4.31219.1 追記
             Extensions.AllExtensionsLoaded += Extensions_AllExtensionsLoaded;
 
@@ -72,6 +89,18 @@ namespace SerialOutputEx
 
             editorPath = path;
 
+            IsStartingNotchSet = Properties.Settings.Default.IsStartingNotchSet;
+            IsUseAutoBrake = Properties.Settings.Default.UseAutoBrake;
+            IsUseAutoNotchFit = Properties.Settings.Default.IsUseAutoNotchFit;
+            //Properties.Settings.Default.Reload();
+
+        }
+
+        
+
+        private void BveHacker_ScenarioCreated(ScenarioCreatedEventArgs e)
+        {
+            //
         }
 
         private void Extensions_AllExtensionsLoaded(object sender, EventArgs e)
@@ -80,6 +109,9 @@ namespace SerialOutputEx
             tsiOutput = Extensions.GetExtension<IContextMenuHacker>().AddCheckableMenuItem("SerialOutputEx 連動", SerialOutputEx_Change, ContextMenuItemType.CoreAndExtensions);
             tsiConsole = Extensions.GetExtension<IContextMenuHacker>().AddCheckableMenuItem("デバッグコンソール 表示", DebugConsoleDisp_Change, ContextMenuItemType.CoreAndExtensions);
             tsiOpenEditor = Extensions.GetExtension<IContextMenuHacker>().AddClickableMenuItem("SerialOutputEx 設定", SerialOutputExEdit_Open, ContextMenuItemType.CoreAndExtensions);
+            tsiStartingNotchSet = Extensions.GetExtension<IContextMenuHacker>().AddCheckableMenuItem("開始時 ノッチ設定転送", SerialOutputExStartingNotchSet_Change, ContextMenuItemType.CoreAndExtensions);
+            tsiAutoBrakeSet = Extensions.GetExtension<IContextMenuHacker>().AddCheckableMenuItem("自動ブレーキ帯 使用", AutoBrakeSet_Change, ContextMenuItemType.CoreAndExtensions);
+            tsiAutoNotchFit = Extensions.GetExtension<IContextMenuHacker>().AddCheckableMenuItem("自動ノッチ合わせ", AutoNotchFit_Change, ContextMenuItemType.CoreAndExtensions);
 
             if (Debug)
             {
@@ -89,6 +121,10 @@ namespace SerialOutputEx
             {
                 tsiOutput.Checked = true;
             }
+
+            tsiStartingNotchSet.Checked = IsStartingNotchSet;
+            tsiAutoBrakeSet.Checked = IsUseAutoBrake;
+            tsiAutoNotchFit.Checked = IsUseAutoNotchFit;
 
             //"シナリオを開く"イベント
             BveHacker.ScenarioOpened += BveHacker_ScenarioOpened;
@@ -170,24 +206,47 @@ namespace SerialOutputEx
             }
         }
 
+        
+
+        private void AutoBrakeSet_Change(object sender, EventArgs e)
+        {
+            flgAutoBrakeSetChange = true;
+            IsUseAutoBrake = tsiAutoBrakeSet.Checked;
+            Properties.Settings.Default.UseAutoBrake = IsUseAutoBrake;
+        }
+
+        private void AutoNotchFit_Change(object sender, EventArgs e)
+        {
+            flgAutoNotchFitChange = true;
+            IsUseAutoNotchFit = tsiAutoNotchFit.Checked;
+            Properties.Settings.Default.IsUseAutoNotchFit = IsUseAutoNotchFit;
+        }
+
         private void DebugConsoleDisp_Change(object sender, EventArgs e)
         {
+            Debug = tsiConsole.Checked;
             if (tsiConsole.Checked)
-            {
-                Debug = true;
+            {                
                 ConsoleOpen();
             }
             else
             {
-                Debug = false;
                 ConsoleClose();
             }
+        }
+
+        private void SerialOutputExStartingNotchSet_Change(object sender, EventArgs e)
+        {
+            IsStartingNotchSet = tsiStartingNotchSet.Checked;
+            Properties.Settings.Default.IsStartingNotchSet = IsStartingNotchSet;
+
         }
 
 
         private void BveHacker_ScenarioOpened(ScenarioOpenedEventArgs e)
         {
             flgScenarioOpened = true;
+            flgFirstSend = true;
         }
 
 
@@ -325,6 +384,24 @@ namespace SerialOutputEx
             //XMLファイルから読み込み、逆シリアル化する
             outputInfo = (OutputInfo)serializer.Deserialize(reader);
             reader.Close();
+
+            using (serialPort = new SerialPort()
+
+            {
+                BaudRate = outputInfo.BaudRate,
+                DataBits = outputInfo.DataBits,
+                Parity = outputInfo.Parity,
+                StopBits = outputInfo.StopBits,
+                DtrEnable = false,
+                RtsEnable = true,
+                ReadBufferSize = 256,
+                WriteBufferSize = 256,
+                WriteTimeout = 1000,
+                ReadTimeout = 1000,
+                Handshake = Handshake.None,
+        })
+                serialPort.DataReceived += new SerialDataReceivedEventHandler(DataReceivedHandler);
+
             if (!flgAnotherPortOpen || _portName == "")
             {
                 serialPort.PortName = "COM" + outputInfo.PortNum.ToString();
@@ -333,12 +410,7 @@ namespace SerialOutputEx
             {
                 serialPort.PortName = _portName;
             }
-            serialPort.BaudRate = outputInfo.BaudRate;
-            serialPort.Parity = outputInfo.Parity;
-            serialPort.StopBits = outputInfo.StopBits;
-            serialPort.DataBits = outputInfo.DataBits;
-            serialPort.WriteTimeout = 1000;
-            serialPort.ReadTimeout = 1000;
+
             Debug = outputInfo.Debug;
 
             //シリアルポートを開く
@@ -361,12 +433,76 @@ namespace SerialOutputEx
             {
                 serialPort.Close();
             }
+            Properties.Settings.Default.Save();
         }
 
         public override TickResult Tick(TimeSpan elapsed)
         {
             if (serialPort.IsOpen)
             {
+
+                if (flgFirstSend && IsStartingNotchSet)
+                {
+                    if (serialPort.IsOpen)
+                    {
+                        serialPort.Write("WR 004 " + BveHacker.Scenario.Vehicle.Instruments.Cab.Handles.NotchInfo.BrakeNotchCount.ToString() + "\r");
+                        serialPort.Write("WR 072 " + BveHacker.Scenario.Vehicle.Instruments.Cab.Handles.NotchInfo.PowerNotchCount.ToString() + "\r");
+                        flgFirstSend = false;
+                    }
+                    if (Debug)
+                    {
+                        Console.Write("ブレーキ段数         WR 004 " + BveHacker.Scenario.Vehicle.Instruments.Cab.Handles.NotchInfo.BrakeNotchCount.ToString() + "\r\n");
+                        Console.Write("マスコンノッチ数     WR 072 " + BveHacker.Scenario.Vehicle.Instruments.Cab.Handles.NotchInfo.PowerNotchCount.ToString() + "\r\n");
+                    }
+                }
+
+                if (flgAutoBrakeSetChange)
+                {
+                    if (serialPort.IsOpen)
+                    {
+                        if (IsUseAutoBrake) {
+                            serialPort.Write("WR 068 1\r");
+                            if (Debug)
+                            {
+                                Console.Write("自動ブレーキ有効     WR 068 1\r\n");
+                            }
+                        }
+                        else
+                        {
+                            serialPort.Write("WR 068 0\r");
+                            if (Debug)
+                            {
+                                Console.Write("自動ブレーキ無効     WR 068 0\r\n");
+                            }
+                        }
+                    }
+                    flgAutoBrakeSetChange = false;
+                }
+
+                if (flgAutoNotchFitChange)
+                {
+                    if (serialPort.IsOpen)
+                    {
+                        if (IsUseAutoNotchFit)
+                        {
+                            serialPort.Write("WR 078 1\r");
+                            if (Debug)
+                            {
+                                Console.Write("自動ノッチ合わせ有効 WR 078 1\r\n");
+                            }
+                        }
+                        else
+                        {
+                            serialPort.Write("WR 078 0\r");
+                            if (Debug)
+                            {
+                                Console.Write("自動ノッチ合わせ無効 WR 078 0\r\n");
+                            }
+                        }
+                    }
+                    flgAutoNotchFitChange = false;
+                }
+
                 //If you want to change the Handle state, please access to Ats.Handle
                 //送信コマンド用
                 string str_send = "";
@@ -531,6 +667,14 @@ namespace SerialOutputEx
                 return str;
             }
             return str.Substring(str.Length - len, len);
+        }
+
+        private static void DataReceivedHandler(object sender, SerialDataReceivedEventArgs e)
+        {
+            //Arduino Microとの通信で発火させるにはRTSをTrueにすること
+            SerialPort sp = (SerialPort)sender;
+            string indata = sp.ReadLine();
+            Console.WriteLine("受信:" + indata);
         }
 
     }
