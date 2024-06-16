@@ -28,22 +28,20 @@
 > ![識別子の削除](https://github.com/GraphTechKEN/SerialOutputEx/blob/image/Property.png "識別子の削除")  
 
 3. SerialOutputをダウンロードします
-SerialOutputプラグイン(シリアル出力エディタ.exeを含む)を[ダウンロード](https://twitter.com/ED67900_5/status/1112336446994542592)します。(E67900-5様 Xサイト)
-
+SerialOutputプラグイン(シリアル出力エディタ.exeを含む)を[ダウンロード](https://x.com/ED67900_5/status/1773725982970859961)します。(E67900-5様 Xサイト)
 > [!TIP]
-> [最新版](https://x.com/ED67900_5/status/1773725982970859961?s=20)がリリース(20204/03/29)されました。
 > シリアル出力エディタ_V1.1.exeのファイル名を「シリアル出力エディタ.exe」にリネームし以下の5.項以降に適用させてください。
 
 5. ファイルの設置  
 AtsEXをインストールしたフォルダ内に、
 バージョン番号とその直下にExtentionというフォルダがあります。  
 > `例：`
->- C:\Program Files\mackoy\BveTs6\Input Devices\AtsEx\1.0\Extentions
->- C:\Users\Public\Documents\AtsEx\1.0\Extensions など
+>- <BVE5/6インストールフォルダ>\Input Devices\AtsEx\1.0\Extentions
+>- または<Userフォルダ>\Public\Documents\AtsEx\1.0\Extensions など
 
 この中フォルダ内に、
 >- SerialOutputEx.dll
->- SerialOutputEx.xml(設定ファイル、既存のxml設定ファイルがある場合はSerialOutputEx.xmlに変更します。  新規生成方法は[下記の通り](#設定ファイルの生成方法))
+>- SerialOutputEx.xml(設定ファイル、既存のxml設定ファイルはSerialOutputEx.xmlに変更。  新規生成方法は[下記の通り](#設定ファイルの生成方法))
 >- シリアル出力エディタ.exe(設定ファイルを編集するソフトウェア)  
 > を設置します。  
 > 設置例  
