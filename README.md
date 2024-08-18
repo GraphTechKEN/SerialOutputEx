@@ -48,7 +48,9 @@ AtsEXをインストールしたフォルダ内に、
 >- シリアル出力エディタ.exe(設定ファイルを編集するソフトウェア)  
 > を設置します。  
 > 設置例  
->  ![ExtentionsFiles](https://github.com/GraphTechKEN/SerialOutputEx/blob/image/ExtentionsFiles.png)  
+>  ![ExtentionsFiles](https://github.com/GraphTechKEN/SerialOutputEx/blob/image/ExtentionsFiles.png)
+>
+> 推奨設定ファイルは[こちら](https://github.com/GraphTechKEN/MC53_ME38_BVE_VM/blob/main/SerialOutputEx.xml)
 
 5. BVEを起動し、ホーム画面の右クリック->設定メニュー->入力プラグイン->AtsEX にチェックマークを入れる(次回起動時以降は省略)
 ![AtsEX設定](https://github.com/GraphTechKEN/SerialOutputEx/blob/image/AtsExCheck.png "AtsEX設定")  
