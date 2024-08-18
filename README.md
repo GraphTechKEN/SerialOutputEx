@@ -30,9 +30,9 @@
 - AtsEXについては同ページをご確認ください。
 
 2. SerialOutputExをダウンロードします
-  [こちら](https://github.com/GraphTechKEN/SerialOutputEx/releases)最新版リリース下部のAssetsから、「SerialOutputEx.dll」をダウンロードします。
+  [こちら](https://github.com/GraphTechKEN/SerialOutputEx/releases)最新版リリース下部のAssetsから、「SerialOutputEx.zip」をダウンロードします。
 > [!CAUTION]
-> `ダウンロード後、SerialOutputEx.dllのゾーン識別子を削除してください。(ファイルを右クリックし、プロパティ内下部の許可をチェック)`  
+> `ダウンロード後、SerialOutputEx.zipのゾーン識別子を削除して展開ください。(ファイルを右クリックし、プロパティ内下部の許可をチェック)`  
 > ![識別子の削除](https://github.com/GraphTechKEN/SerialOutputEx/blob/image/Property.png "識別子の削除")  
 
 3. SerialOutputをダウンロードします
@@ -58,7 +58,7 @@ AtsEXをインストールしたフォルダ内に、
 > 設置例  
 >  ![ExtentionsFiles](https://github.com/GraphTechKEN/SerialOutputEx/blob/image/ExtentionsFiles.png)
 >
-> 推奨設定ファイルは[こちら](https://github.com/GraphTechKEN/MC53_ME38_BVE_VM/blob/main/SerialOutputEx.xml)
+> 推奨の設定ファイルは同梱しています。詳細は[こちら](https://github.com/GraphTechKEN/MC53_ME38_BVE_VM/blob/main/SerialOutputEx.xml)
 
 5. BVEを起動し、ホーム画面の右クリック->設定メニュー->入力プラグイン->AtsEX にチェックマークを入れる(次回起動時以降は省略)
 ![AtsEX設定](https://github.com/GraphTechKEN/SerialOutputEx/blob/image/AtsExCheck.png "AtsEX設定")  
