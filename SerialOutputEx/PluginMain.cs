@@ -5,6 +5,7 @@ using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Serialization;
+using System.Management;
 
 using BveTypes.ClassWrappers;
 
@@ -34,7 +35,6 @@ namespace SerialOutputEx
         private bool flgFirstSend = false;
 
         private bool flgConsoleOpened = false;
-        private bool flgAnotherPortOpen = false;
 
         [DllImport("kernel32.dll")]
         private static extern bool AllocConsole();
@@ -59,6 +59,7 @@ namespace SerialOutputEx
         private bool flgAutoNotchFitChange = false;
         private bool IsUseAutoBrake = false;
         private bool IsUseAutoNotchFit = false;
+        private string xmlpath;
 
         public PluginMain(PluginBuilder builder) : base(builder)
         {
@@ -105,7 +106,7 @@ namespace SerialOutputEx
 
         private void Extensions_AllExtensionsLoaded(object sender, EventArgs e)
         {
-            string openedPortName = Open(portName);
+            string openedPortName = Open(portName,false);
             tsiOutput = Extensions.GetExtension<IContextMenuHacker>().AddCheckableMenuItem("SerialOutputEx 連動", SerialOutputEx_Change, ContextMenuItemType.CoreAndExtensions);
             tsiConsole = Extensions.GetExtension<IContextMenuHacker>().AddCheckableMenuItem("デバッグコンソール 表示", DebugConsoleDisp_Change, ContextMenuItemType.CoreAndExtensions);
             tsiOpenEditor = Extensions.GetExtension<IContextMenuHacker>().AddClickableMenuItem("SerialOutputEx 設定", SerialOutputExEdit_Open, ContextMenuItemType.CoreAndExtensions);
@@ -151,6 +152,7 @@ namespace SerialOutputEx
             }
         }
 
+        //シリアル出力エディタの起動
         private void SerialOutputExEdit_Open(object sender, EventArgs e)
         {
             try
@@ -164,6 +166,7 @@ namespace SerialOutputEx
             }
         }
 
+        //ポート選択メニュー操作
         private void TsiPorts_Click(object sender, EventArgs e)
         {
             // sender にはクリックされたメニューの ToolStripMenuItem が入っている
@@ -177,9 +180,21 @@ namespace SerialOutputEx
                     {
                         serialPort.Close();
                     }
-                    portName = mi.Text;
-                    flgAnotherPortOpen = true;
-                    Open(portName);
+                    portName = mi.Text.Substring(mi.Text.IndexOf("COM")).Trim(')');
+
+                    int.TryParse(portName.Substring(3), out int iPortNum);
+                    outputInfo.PortNum = iPortNum;
+
+                    //XmlSerializerオブジェクトを作成
+                    //オブジェクトの型を指定する
+                    XmlSerializer serializer = new XmlSerializer(typeof(OutputInfo));
+                    //書き込むファイルを開く（UTF-8 BOM無し）
+                    StreamWriter sw = new StreamWriter(xmlpath, false, new UTF8Encoding(false));
+                    //シリアル化し、XMLファイルに保存する
+                    serializer.Serialize(sw, outputInfo);
+                    sw.Close();
+
+                    Open(portName,true);
                 }
                 catch (Exception ex)
                 {
@@ -188,13 +203,14 @@ namespace SerialOutputEx
             }
         }
 
+        //シリアル出力(ON/OFF)メニュー変更
         private void SerialOutputEx_Change(object sender, EventArgs e)
         {
             if (tsiOutput.Checked)
             {
                 if (!serialPort.IsOpen)
                 {
-                    Open(portName);
+                    Open(portName,false);
                 }
             }
             else
@@ -206,8 +222,7 @@ namespace SerialOutputEx
             }
         }
 
-        
-
+        //ブレーキ段数自動設定(ON/OFF)メニュー変更
         private void AutoBrakeSet_Change(object sender, EventArgs e)
         {
             flgAutoBrakeSetChange = true;
@@ -222,6 +237,7 @@ namespace SerialOutputEx
             Properties.Settings.Default.IsUseAutoNotchFit = IsUseAutoNotchFit;
         }
 
+        //デバッグコンソール表示(ON/OFF)変更
         private void DebugConsoleDisp_Change(object sender, EventArgs e)
         {
             Debug = tsiConsole.Checked;
@@ -256,31 +272,82 @@ namespace SerialOutputEx
             tsiOutput.Checked = serialPort.IsOpen;
 
             tsiOutput.DropDownItems.Clear();
-            foreach (var _portName in SerialPort.GetPortNames())
-            {
-                try
-                {
-                    tsiPorts = new ToolStripMenuItem(_portName);
 
-                    // クリックイベントを追加
-                    tsiPorts.Click += TsiPorts_Click;
-                    //使用中ポートにチェック、Enableとする
-                    if ((_portName == serialPort.PortName) && serialPort.IsOpen)
-                    {
-                        tsiPorts.Checked = true;
-                        tsiPorts.Enabled = false;
-                    }
-                    else
-                    {
-                        tsiPorts.Checked = false;
-                        tsiPorts.Enabled = true;
-                    }
-                    tsiOutput.DropDownItems.Add(tsiPorts);
-                }
-                catch (Exception ex)
+            string[] ports = GetDeviceNames();
+
+
+            if (ports != null)
+            {
+                foreach (var _portName in ports)
                 {
-                    MessageBox.Show(ex.Message);
+                    try
+                    {
+                        tsiPorts = new ToolStripMenuItem(_portName);
+
+                        // クリックイベントを追加
+                        tsiPorts.Click += TsiPorts_Click;
+                        //使用中ポートにチェック、Enableとする
+                        if ((_portName == serialPort.PortName) && serialPort.IsOpen)
+                        {
+                            tsiPorts.Checked = true;
+                            tsiPorts.Enabled = false;
+                        }
+                        else
+                        {
+                            tsiPorts.Checked = false;
+                            tsiPorts.Enabled = true;
+                        }
+                        tsiOutput.DropDownItems.Add(tsiPorts);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message);
+                    }
                 }
+            }
+        }
+
+        //シリアルポート名称一覧を取得
+        public static string[] GetDeviceNames()
+        {
+            var deviceNameList = new System.Collections.ArrayList();
+            var check = new System.Text.RegularExpressions.Regex("(COM[1-9][0-9]?[0-9]?)");
+
+            ManagementClass mcPnPEntity = new ManagementClass("Win32_PnPEntity");
+            ManagementObjectCollection manageObjCol = mcPnPEntity.GetInstances();
+
+            //全てのPnPデバイスを探索しシリアル通信が行われるデバイスを随時追加する
+            foreach (ManagementObject manageObj in manageObjCol)
+            {
+                //Nameプロパティを取得
+                var namePropertyValue = manageObj.GetPropertyValue("Name");
+                if (namePropertyValue == null)
+                {
+                    continue;
+                }
+
+                //Nameプロパティ文字列の一部が"(COM1)～(COM999)"と一致するときリストに追加"
+                string name = namePropertyValue.ToString();
+                if (check.IsMatch(name))
+                {
+                    deviceNameList.Add(name);
+                }
+            }
+
+            //戻り値作成
+            if (deviceNameList.Count > 0)
+            {
+                string[] deviceNames = new string[deviceNameList.Count];
+                int index = 0;
+                foreach (var name in deviceNameList)
+                {
+                    deviceNames[index++] = name.ToString();
+                }
+                return deviceNames;
+            }
+            else
+            {
+                return null;
             }
         }
 
@@ -292,7 +359,7 @@ namespace SerialOutputEx
                 flgScenarioOpened = false;
             }
         }
-        private string Open(string portName)
+        private string Open(string portName, bool anotherPortOpen)
         {
             string stTarget = System.Reflection.Assembly.GetExecutingAssembly().CodeBase;
             string dllPath = "";
@@ -311,19 +378,19 @@ namespace SerialOutputEx
                 MessageBox.Show("ファイルURIではありません。");
             }
 
-            string dir = Path.GetDirectoryName(dllPath);
-            string fileName = Path.GetFileNameWithoutExtension(dllPath);　//0.2.31217.1 追記 設定ファイル名をdllと同じとする。
-            string path = dir + @"\" + fileName + ".xml";
+            string xmldir = Path.GetDirectoryName(dllPath);
+            string xmlfileName = Path.GetFileNameWithoutExtension(dllPath);　//0.2.31217.1 追記 設定ファイル名をdllと同じとする。
+            xmlpath = xmldir + @"\" + xmlfileName + ".xml";
 
             try
             {
-                if (!File.Exists(path))
+                if (!File.Exists(xmlpath))
                 {
-                    MessageBox.Show("設定ファイル " + fileName + ".xml が見つかりません");　//0.2.31217.1 変更 設定ファイル名をdllと同じとする。
+                    MessageBox.Show("設定ファイル " + xmlfileName + ".xml が見つかりません");　//0.2.31217.1 変更 設定ファイル名をdllと同じとする。
                 }
                 else
                 {
-                    portName = OutputOpen(path, portName);
+                    portName = OutputOpen(xmlpath, portName, anotherPortOpen);
                 }
 
             }
@@ -351,6 +418,7 @@ namespace SerialOutputEx
             return portName;
         }
 
+        //コンソール表示
         private void ConsoleOpen()
         {
             /* 参考ページ：C#(Windows Formアプリケーション)でコンソールの表示、非表示、出力方法(Console.WriteLine())
@@ -367,13 +435,14 @@ namespace SerialOutputEx
             flgConsoleOpened = true;
         }
 
+        //コンソール非表示
         private void ConsoleClose()
         {
             FreeConsole();
             flgConsoleOpened = false;
         }
 
-        private string OutputOpen(string path , string _portName)
+        private string OutputOpen(string path , string _portName , bool _anotherPortOpen)
         {
             //XmlSerializerオブジェクトを作成
             XmlSerializer serializer = new XmlSerializer(typeof(OutputInfo));
@@ -402,10 +471,13 @@ namespace SerialOutputEx
         })
                 serialPort.DataReceived += new SerialDataReceivedEventHandler(DataReceivedHandler);
 
-            if (!flgAnotherPortOpen || _portName == "")
+            //同じを開くかポート番号がnullのとき
+            if (!_anotherPortOpen || _portName == "")
             {
                 serialPort.PortName = "COM" + outputInfo.PortNum.ToString();
             }
+
+            //別のポートを開く指示があるとき
             else
             {
                 serialPort.PortName = _portName;
@@ -414,7 +486,18 @@ namespace SerialOutputEx
             Debug = outputInfo.Debug;
 
             //シリアルポートを開く
-            serialPort.Open();
+            try
+            {
+                serialPort.Open();
+            }
+            catch(IOException ex)
+            {
+                MessageBox.Show("シリアルポート "+ serialPort.PortName + " が存在しません。\nシナリオ選択画面を閉じ、右クリックメニューの[SerialOutputEX 連動]メニューから別のポートを選択してください。" );
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
 
             return serialPort.PortName;
 
@@ -429,10 +512,14 @@ namespace SerialOutputEx
                 ConsoleClose();
             }
             //シリアルポートを閉じる
-            if (serialPort.IsOpen)
+            try
             {
-                serialPort.Close();
+                if (serialPort.IsOpen)
+                {
+                    serialPort.Close();
+                }
             }
+            catch { }
             Properties.Settings.Default.Save();
         }
 
@@ -544,7 +631,7 @@ namespace SerialOutputEx
         //送信コマンド生成
         private string SendCommandGenerator(OutputInfoData _data)
         {
-            HandleSet handles = BveHacker.Scenario.Vehicle.Instruments.Cab.Handles;
+            HandleSet handles = NewMethod();
             PluginLoader ats = BveHacker.Scenario.Vehicle.Instruments.PluginLoader;
             VehicleStateStore vehicleStateStore = ats.StateStore;
 
@@ -626,7 +713,7 @@ namespace SerialOutputEx
                         str = "B";
                     }
                     break;
-                    
+
                 case 12://ドア状態
                     str = BveHacker.Scenario.Vehicle.Doors.AreAllClosingOrClosed ? "0" : "1";
                     break;
@@ -651,6 +738,11 @@ namespace SerialOutputEx
             return str;
         }
 
+        private HandleSet NewMethod()
+        {
+            return BveHacker.Scenario.Vehicle.Instruments.Cab.Handles;
+        }
+
         //文字列を末尾から指定文字数切り取るメソッド 0.2.31217.1 追加
         public static string Right(string str, int len)
         {
@@ -673,8 +765,16 @@ namespace SerialOutputEx
         {
             //Arduino Microとの通信で発火させるにはRTSをTrueにすること
             SerialPort sp = (SerialPort)sender;
-            string indata = sp.ReadLine();
-            Console.WriteLine("受信:" + indata);
+            //ESP32でBluetoothSPPで落ちたのでtrycatch
+            try
+            {
+                string indata = sp.ReadLine();
+                Console.WriteLine("受信:" + indata);
+            }
+            catch
+            {
+                Console.WriteLine(e.ToString());
+            }
         }
 
     }
