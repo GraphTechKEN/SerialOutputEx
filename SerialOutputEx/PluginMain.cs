@@ -271,37 +271,41 @@ namespace SerialOutputEx
             tsiOutput.Enabled = !flgScenarioOpened;
             tsiOutput.Checked = serialPort.IsOpen;
 
-            tsiOutput.DropDownItems.Clear();
-
-            string[] ports = GetDeviceNames();
-
-
-            if (ports != null)
+            if (!flgScenarioOpened)
             {
-                foreach (var _portName in ports)
-                {
-                    try
-                    {
-                        tsiPorts = new ToolStripMenuItem(_portName);
 
-                        // クリックイベントを追加
-                        tsiPorts.Click += TsiPorts_Click;
-                        //使用中ポートにチェック、Enableとする
-                        if ((_portName == serialPort.PortName) && serialPort.IsOpen)
-                        {
-                            tsiPorts.Checked = true;
-                            tsiPorts.Enabled = false;
-                        }
-                        else
-                        {
-                            tsiPorts.Checked = false;
-                            tsiPorts.Enabled = true;
-                        }
-                        tsiOutput.DropDownItems.Add(tsiPorts);
-                    }
-                    catch (Exception ex)
+                tsiOutput.DropDownItems.Clear();
+
+                string[] ports = GetDeviceNames();
+
+
+                if (ports != null)
+                {
+                    foreach (var _portName in ports)
                     {
-                        MessageBox.Show(ex.Message);
+                        try
+                        {
+                            tsiPorts = new ToolStripMenuItem(_portName);
+
+                            // クリックイベントを追加
+                            tsiPorts.Click += TsiPorts_Click;
+                            //使用中ポートにチェック、Enableとする
+                            if ((_portName == serialPort.PortName) && serialPort.IsOpen)
+                            {
+                                tsiPorts.Checked = true;
+                                tsiPorts.Enabled = false;
+                            }
+                            else
+                            {
+                                tsiPorts.Checked = false;
+                                tsiPorts.Enabled = true;
+                            }
+                            tsiOutput.DropDownItems.Add(tsiPorts);
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show(ex.Message);
+                        }
                     }
                 }
             }
@@ -444,6 +448,7 @@ namespace SerialOutputEx
 
         private string OutputOpen(string path , string _portName , bool _anotherPortOpen)
         {
+
             //XmlSerializerオブジェクトを作成
             XmlSerializer serializer = new XmlSerializer(typeof(OutputInfo));
 
@@ -523,8 +528,11 @@ namespace SerialOutputEx
             Properties.Settings.Default.Save();
         }
 
+        static int brake;
+
         public override TickResult Tick(TimeSpan elapsed)
         {
+
             if (serialPort.IsOpen)
             {
 
