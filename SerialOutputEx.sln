@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SerialOutputEx", "SerialOut
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug with BVE5.8|Any CPU = Debug with BVE5.8|Any CPU
+		Debug with BVE5.8|x86 = Debug with BVE5.8|x86
 		Debug with BVE6|Any CPU = Debug with BVE6|Any CPU
 		Debug with BVE6|x86 = Debug with BVE6|x86
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{15F8005B-285B-4B98-B4D8-13978AD876F8}.Debug with BVE5.8|Any CPU.ActiveCfg = Debug with BVE5.8|Any CPU
+		{15F8005B-285B-4B98-B4D8-13978AD876F8}.Debug with BVE5.8|Any CPU.Build.0 = Debug with BVE5.8|Any CPU
+		{15F8005B-285B-4B98-B4D8-13978AD876F8}.Debug with BVE5.8|x86.ActiveCfg = Debug with BVE5.8|x86
+		{15F8005B-285B-4B98-B4D8-13978AD876F8}.Debug with BVE5.8|x86.Build.0 = Debug with BVE5.8|x86
 		{15F8005B-285B-4B98-B4D8-13978AD876F8}.Debug with BVE6|Any CPU.ActiveCfg = Debug with BVE6|Any CPU
 		{15F8005B-285B-4B98-B4D8-13978AD876F8}.Debug with BVE6|Any CPU.Build.0 = Debug with BVE6|Any CPU
 		{15F8005B-285B-4B98-B4D8-13978AD876F8}.Debug with BVE6|x86.ActiveCfg = Debug with BVE6|x86
