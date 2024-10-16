@@ -14,6 +14,8 @@ using AtsEx.PluginHost.Plugins.Extensions;
 using AtsEx.Extensions.ContextMenuHacker;
 using AtsEx.PluginHost;
 using System.Text;
+using System.Text.RegularExpressions;
+using Microsoft.Win32;
 
 namespace SerialOutputEx
 {
@@ -49,6 +51,8 @@ namespace SerialOutputEx
         private ToolStripMenuItem tsiStartingNotchSet;
         private ToolStripMenuItem tsiAutoBrakeSet;
         private ToolStripMenuItem tsiAutoNotchFit;
+        private ToolStripMenuItem tsiSettings;
+        private ToolStripSeparator tsiSeperator;
 
         private string portName = "";
         private string editorPath = "";
@@ -113,6 +117,8 @@ namespace SerialOutputEx
             tsiStartingNotchSet = Extensions.GetExtension<IContextMenuHacker>().AddCheckableMenuItem("開始時 ノッチ設定転送", SerialOutputExStartingNotchSet_Change, ContextMenuItemType.CoreAndExtensions);
             tsiAutoBrakeSet = Extensions.GetExtension<IContextMenuHacker>().AddCheckableMenuItem("自動ブレーキ帯 使用", AutoBrakeSet_Change, ContextMenuItemType.CoreAndExtensions);
             tsiAutoNotchFit = Extensions.GetExtension<IContextMenuHacker>().AddCheckableMenuItem("自動ノッチ合わせ", AutoNotchFit_Change, ContextMenuItemType.CoreAndExtensions);
+            tsiSettings = Extensions.GetExtension<IContextMenuHacker>().AddClickableMenuItem("設定", Settings_Click, ContextMenuItemType.CoreAndExtensions);
+            tsiSeperator = Extensions.GetExtension<IContextMenuHacker>().AddSeparator(0);
 
             if (Debug)
             {
@@ -126,6 +132,11 @@ namespace SerialOutputEx
             tsiStartingNotchSet.Checked = IsStartingNotchSet;
             tsiAutoBrakeSet.Checked = IsUseAutoBrake;
             tsiAutoNotchFit.Checked = IsUseAutoNotchFit;
+
+            tsiStartingNotchSet.Enabled = tsiOutput.Checked;
+            tsiAutoBrakeSet.Enabled = tsiOutput.Checked;
+            tsiAutoNotchFit.Enabled = tsiOutput.Checked;
+
 
             //"シナリオを開く"イベント
             BveHacker.ScenarioOpened += BveHacker_ScenarioOpened;
@@ -249,6 +260,16 @@ namespace SerialOutputEx
             {
                 ConsoleClose();
             }
+            outputInfo.Debug = Debug;
+
+            //XmlSerializerオブジェクトを作成
+            //オブジェクトの型を指定する
+            XmlSerializer serializer = new XmlSerializer(typeof(OutputInfo));
+            //書き込むファイルを開く（UTF-8 BOM無し）
+            StreamWriter sw = new StreamWriter(xmlpath, false, new UTF8Encoding(false));
+            //シリアル化し、XMLファイルに保存する
+            serializer.Serialize(sw, outputInfo);
+            sw.Close();
         }
 
         private void SerialOutputExStartingNotchSet_Change(object sender, EventArgs e)
@@ -268,8 +289,22 @@ namespace SerialOutputEx
 
         private void ContextMenu_Opened(object sender, EventArgs e)
         {
+            tsiSettings.DropDownItems.Clear();
+
+            ToolStripSeparator tss = new ToolStripSeparator();
+            tsiSettings.DropDownItems.Add(tsiOpenEditor);
+            tsiSettings.DropDownItems.Add(tss);
+            tsiSettings.DropDownItems.Add(tsiConsole);
+            tsiSettings.DropDownItems.Add(tsiStartingNotchSet);
+            tsiSettings.DropDownItems.Add(tsiAutoBrakeSet);
+            tsiSettings.DropDownItems.Add(tsiAutoNotchFit);
+
             tsiOutput.Enabled = !flgScenarioOpened;
             tsiOutput.Checked = serialPort.IsOpen;
+
+            tsiStartingNotchSet.Enabled = tsiOutput.Checked;
+            tsiAutoBrakeSet.Enabled = tsiOutput.Checked;
+            tsiAutoNotchFit.Enabled = tsiOutput.Checked;
 
             if (!flgScenarioOpened)
             {
@@ -312,10 +347,10 @@ namespace SerialOutputEx
         }
 
         //シリアルポート名称一覧を取得
-        public static string[] GetDeviceNames()
+        public string[] GetDeviceNames()
         {
             var deviceNameList = new System.Collections.ArrayList();
-            var check = new System.Text.RegularExpressions.Regex("(COM[1-9][0-9]?[0-9]?)");
+            Regex regexPortName = new Regex(@"(COM\d+)");
 
             ManagementClass mcPnPEntity = new ManagementClass("Win32_PnPEntity");
             ManagementObjectCollection manageObjCol = mcPnPEntity.GetInstances();
@@ -324,7 +359,9 @@ namespace SerialOutputEx
             foreach (ManagementObject manageObj in manageObjCol)
             {
                 //Nameプロパティを取得
-                var namePropertyValue = manageObj.GetPropertyValue("Name");
+                var namePropertyValue = manageObj["Name"];
+                string classGuid = manageObj["ClassGuid"] as string; // GUID
+                string devicePass = manageObj["DeviceID"] as string; // デバイスインスタンスパス
                 if (namePropertyValue == null)
                 {
                     continue;
@@ -332,10 +369,46 @@ namespace SerialOutputEx
 
                 //Nameプロパティ文字列の一部が"(COM1)～(COM999)"と一致するときリストに追加"
                 string name = namePropertyValue.ToString();
-                if (check.IsMatch(name))
+                if (regexPortName.IsMatch(name) && classGuid != null && devicePass != null)
                 {
-                    deviceNameList.Add(name);
+
+                    // デバイスインスタンスパスからシリアル通信接続機器のみを抽出
+                    // {4d36e978-e325-11ce-bfc1-08002be10318}はシリアル通信接続機器を示す固定値
+                    if (String.Equals(classGuid, "{4d36e978-e325-11ce-bfc1-08002be10318}",
+                            StringComparison.InvariantCulture))
+                    {
+
+                        // デバイスインスタンスパスからデバイスIDを2段階で抜き出す
+                        string[] tokens = devicePass.Split('&');
+                        string[] addressToken = tokens[4].Split('_');
+                        string[] deviceType = tokens[0].Split('\\');
+                        string bluetoothAddress = addressToken[0];
+                        //Bluetoothデバイスのとき
+                        if (deviceType[0] == "BTHENUM")
+                        {
+                            Match m = regexPortName.Match(name);
+
+                            string comPortNumber = "";
+                            if (m.Success)
+                            {
+                                // COM番号を抜き出す
+                                comPortNumber = m.Groups[1].ToString();
+                            }
+
+                            if (Convert.ToUInt64(bluetoothAddress, 16) > 0)
+                            {
+                                string bluetoothName = GetBluetoothRegistryName(bluetoothAddress);
+                                deviceNameList.Add(bluetoothName + " (" + comPortNumber + ")");
+                            }
+                        }
+                        //それ以外のとき
+                        else
+                        {
+                            deviceNameList.Add(name);
+                        }
+                    }
                 }
+                
             }
 
             //戻り値作成
@@ -783,6 +856,41 @@ namespace SerialOutputEx
             {
                 Console.WriteLine(e.ToString());
             }
+        }
+
+        /// <summary>機器名称取得</summary> 
+        /// <param name="address">[in] アドレス</param> 
+        /// <returns>[out] 機器名称</returns> 
+        private string GetBluetoothRegistryName(string address)
+        {
+            string deviceName = "";
+            // 以下のレジストリパスはどのPCでも共通
+            string registryPath = @"SYSTEM\CurrentControlSet\Services\BTHPORT\Parameters\Devices";
+            string devicePath = String.Format(@"{0}\{1}", registryPath, address);
+
+            using (RegistryKey key = Registry.LocalMachine.OpenSubKey(devicePath))
+            {
+                if (key != null)
+                {
+                    Object o = key.GetValue("Name");
+
+                    byte[] raw = o as byte[];
+
+                    if (raw != null)
+                    {
+                        // ASCII変換
+                        deviceName = Encoding.ASCII.GetString(raw);
+                    }
+                }
+            }
+            // NULL文字をトリミングしてリターン
+            return deviceName.TrimEnd('\0');
+        }
+
+        //設定メニュークリック
+        private void Settings_Click(object sender, EventArgs e)
+        {
+            
         }
 
     }
