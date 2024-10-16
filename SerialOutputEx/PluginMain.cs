@@ -325,7 +325,7 @@ namespace SerialOutputEx
                             // クリックイベントを追加
                             tsiPorts.Click += TsiPorts_Click;
                             //使用中ポートにチェック、Enableとする
-                            if ((_portName == serialPort.PortName) && serialPort.IsOpen)
+                            if ((_portName.Contains(serialPort.PortName)) && serialPort.IsOpen)
                             {
                                 tsiPorts.Checked = true;
                                 tsiPorts.Enabled = false;
@@ -380,31 +380,36 @@ namespace SerialOutputEx
 
                         // デバイスインスタンスパスからデバイスIDを2段階で抜き出す
                         string[] tokens = devicePass.Split('&');
-                        string[] addressToken = tokens[4].Split('_');
-                        string[] deviceType = tokens[0].Split('\\');
-                        string bluetoothAddress = addressToken[0];
+
                         //Bluetoothデバイスのとき
-                        if (deviceType[0] == "BTHENUM")
+                        if (tokens.Length > 4)
                         {
-                            Match m = regexPortName.Match(name);
-
-                            string comPortNumber = "";
-                            if (m.Success)
+                            string[] addressToken = tokens[4].Split('_');
+                            string[] deviceType = tokens[0].Split('\\');
+                            string bluetoothAddress = addressToken[0];
+                            if (deviceType[0] == "BTHENUM")
                             {
-                                // COM番号を抜き出す
-                                comPortNumber = m.Groups[1].ToString();
-                            }
+                                Match m = regexPortName.Match(name);
 
-                            if (Convert.ToUInt64(bluetoothAddress, 16) > 0)
-                            {
-                                string bluetoothName = GetBluetoothRegistryName(bluetoothAddress);
-                                deviceNameList.Add(bluetoothName + " (" + comPortNumber + ")");
+                                string comPortNumber = "";
+                                if (m.Success)
+                                {
+                                    // COM番号を抜き出す
+                                    comPortNumber = m.Groups[1].ToString();
+                                }
+
+                                if (Convert.ToUInt64(bluetoothAddress, 16) > 0)
+                                {
+                                    string bluetoothName = GetBluetoothRegistryName(bluetoothAddress);
+                                    deviceNameList.Add(bluetoothName + " (" + comPortNumber + ")");
+                                }
                             }
-                        }
-                        //それ以外のとき
-                        else
-                        {
-                            deviceNameList.Add(name);
+                            //それ以外のとき
+                            else
+                            {
+                                deviceNameList.Add(name);
+                                //}
+                            }
                         }
                     }
                 }
