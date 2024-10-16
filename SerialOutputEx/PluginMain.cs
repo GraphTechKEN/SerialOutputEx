@@ -191,7 +191,8 @@ namespace SerialOutputEx
                     {
                         serialPort.Close();
                     }
-                    portName = mi.Text.Substring(mi.Text.IndexOf("COM")).Trim(')');
+                    Regex regexPortName = new Regex(@"(COM\d+)");
+                    portName = regexPortName.Match(mi.Text).Groups[1].ToString();
 
                     int.TryParse(portName.Substring(3), out int iPortNum);
                     outputInfo.PortNum = iPortNum;
@@ -325,7 +326,7 @@ namespace SerialOutputEx
                             // クリックイベントを追加
                             tsiPorts.Click += TsiPorts_Click;
                             //使用中ポートにチェック、Enableとする
-                            if ((_portName.Contains(serialPort.PortName)) && serialPort.IsOpen)
+                            if ((_portName.Contains("("+serialPort.PortName+")")) && serialPort.IsOpen)
                             {
                                 tsiPorts.Checked = true;
                                 tsiPorts.Enabled = false;
@@ -357,63 +358,64 @@ namespace SerialOutputEx
 
             //全てのPnPデバイスを探索しシリアル通信が行われるデバイスを随時追加する
             foreach (ManagementObject manageObj in manageObjCol)
-            {
-                //Nameプロパティを取得
-                var namePropertyValue = manageObj["Name"];
-                string classGuid = manageObj["ClassGuid"] as string; // GUID
-                string devicePass = manageObj["DeviceID"] as string; // デバイスインスタンスパス
-                if (namePropertyValue == null)
+            {               
+                var namePropertyValue = manageObj["Name"];//Nameプロパティを取得
+                if (namePropertyValue != null)
                 {
-                    continue;
-                }
-
-                //Nameプロパティ文字列の一部が"(COM1)～(COM999)"と一致するときリストに追加"
-                string name = namePropertyValue.ToString();
-                if (regexPortName.IsMatch(name) && classGuid != null && devicePass != null)
-                {
-
-                    // デバイスインスタンスパスからシリアル通信接続機器のみを抽出
-                    // {4d36e978-e325-11ce-bfc1-08002be10318}はシリアル通信接続機器を示す固定値
-                    if (String.Equals(classGuid, "{4d36e978-e325-11ce-bfc1-08002be10318}",
-                            StringComparison.InvariantCulture))
+                    string classGuid = manageObj["ClassGuid"] as string; // GUID
+                    string devicePass = manageObj["DeviceID"] as string; // デバイスインスタンスパス
+                    //Nameプロパティ文字列の一部が"(COM1)～(COM999)"と一致するときリストに追加"
+                    string name = namePropertyValue.ToString();
+                    if (regexPortName.IsMatch(name) && classGuid != null && devicePass != null)
                     {
 
-                        // デバイスインスタンスパスからデバイスIDを2段階で抜き出す
-                        string[] tokens = devicePass.Split('&');
-
-                        //Bluetoothデバイスのとき
-                        if (tokens.Length > 4)
+                        // デバイスインスタンスパスからシリアル通信接続機器のみを抽出
+                        // {4d36e978-e325-11ce-bfc1-08002be10318}はシリアル通信接続機器を示す固定値
+                        if (String.Equals(classGuid, "{4d36e978-e325-11ce-bfc1-08002be10318}",
+                                StringComparison.InvariantCulture))
                         {
-                            string[] addressToken = tokens[4].Split('_');
-                            string[] deviceType = tokens[0].Split('\\');
-                            string bluetoothAddress = addressToken[0];
-                            if (deviceType[0] == "BTHENUM")
+
+                            // デバイスインスタンスパスからデバイスIDを2段階で抜き出す
+                            string[] tokens = devicePass.Split('&');
+
+                            //Bluetoothデバイスかその他(USB等)デバイスかを判別
+                            //Bluetoothデバイスのとき
+                            if (tokens.Length > 4)
                             {
-                                Match m = regexPortName.Match(name);
-
-                                string comPortNumber = "";
-                                if (m.Success)
+                                string[] addressToken = tokens[4].Split('_');
+                                string[] deviceType = tokens[0].Split('\\');
+                                string bluetoothAddress = addressToken[0];
+                                if (deviceType[0] == "BTHENUM")
                                 {
-                                    // COM番号を抜き出す
-                                    comPortNumber = m.Groups[1].ToString();
+                                    Match m = regexPortName.Match(name);
+
+                                    string comPortNumber = "";
+                                    if (m.Success)
+                                    {
+                                        // COM番号を抜き出す
+                                        comPortNumber = m.Groups[1].ToString();
+                                    }
+
+                                    if (Convert.ToUInt64(bluetoothAddress, 16) > 0)
+                                    {
+                                        string bluetoothName = GetBluetoothRegistryName(bluetoothAddress);
+                                        deviceNameList.Add(bluetoothName + " (" + comPortNumber + ")");
+                                    }
                                 }
-
-                                if (Convert.ToUInt64(bluetoothAddress, 16) > 0)
+                                //それ以外のとき
+                                else
                                 {
-                                    string bluetoothName = GetBluetoothRegistryName(bluetoothAddress);
-                                    deviceNameList.Add(bluetoothName + " (" + comPortNumber + ")");
+                                    deviceNameList.Add(name);
                                 }
                             }
                             //それ以外のとき
                             else
                             {
                                 deviceNameList.Add(name);
-                                //}
                             }
                         }
                     }
                 }
-                
             }
 
             //戻り値作成
