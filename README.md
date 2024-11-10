@@ -49,7 +49,7 @@ AtsEXをインストールしたフォルダ内に、
 >- Userフォルダは、`C:\ユーザーやD:\ユーザーなど`
 
 > [!TIP]
->- BVEプログラムのインストールフォルダのInput Deviceフォルダ(例：C:\Program Files\mackoy\BveTs6\Input Devices)内のAtsEx.Caller.InputDevice.txtに上記ディレクトリが明示されています。その中のバージョン番号(1.0)の直下(Extensions)の中に配置します。
+>- BVEプログラムのインストールフォルダのInput Deviceフォルダ(例：C:\Program Files\mackoy\BveTs6\Input Devices)内のAtsEx.Caller.InputDevice.txtに上記ディレクトリが明示されています。その中のバージョン番号(最新版は1.0)の直下(Extensions)の中に配置します。
 
 この中フォルダ内に、
 >- SerialOutputEx.dll
