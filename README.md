@@ -20,7 +20,7 @@
 > 1. [AtsEX入力デバイスプラグインのインストール](https://github.com/GraphTechKEN/SerialOutputEx/tree/main#1-atsex%E5%85%A5%E5%8A%9B%E3%83%87%E3%83%90%E3%82%A4%E3%82%B9%E3%83%97%E3%83%A9%E3%82%B0%E3%82%A4%E3%83%B3%E3%81%AE%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB))
 > 2. [SerialOutputExプラグインのダウンロード](https://github.com/GraphTechKEN/SerialOutputEx/tree/main?tab=readme-ov-file#2-serialoutputex%E3%83%97%E3%83%A9%E3%82%B0%E3%82%A4%E3%83%B3%E3%81%AE%E3%83%80%E3%82%A6%E3%83%B3%E3%83%AD%E3%83%BC%E3%83%89)
 > 3. [SerialOutputプラグインとシリアル出力エディタのダウンロード](https://github.com/GraphTechKEN/SerialOutputEx/tree/main?tab=readme-ov-file#3-serialoutput%E3%83%97%E3%83%A9%E3%82%B0%E3%82%A4%E3%83%B3%E3%81%A8%E3%82%B7%E3%83%AA%E3%82%A2%E3%83%AB%E5%87%BA%E5%8A%9B%E3%82%A8%E3%83%87%E3%82%A3%E3%82%BF%E3%81%AE%E3%83%80%E3%82%A6%E3%83%B3%E3%83%AD%E3%83%BC%E3%83%89)
-> 4. [ダウンロードしたファイルの設置](https://github.com/GraphTechKEN/SerialOutputEx/tree/main?tab=readme-ov-file#4-%E3%83%80%E3%82%A6%E3%83%B3%E3%83%AD%E3%83%BC%E3%83%89%E3%81%97%E3%81%9F%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E3%81%AE%E8%A8%AD%E7%BD%AE)
+> 4. [ダウンロードしたファイルの配置](https://github.com/GraphTechKEN/SerialOutputEx/tree/main?tab=readme-ov-file#4-%E3%83%80%E3%82%A6%E3%83%B3%E3%83%AD%E3%83%BC%E3%83%89%E3%81%97%E3%81%9F%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E3%81%AE%E8%A8%AD%E7%BD%AE)
 > 5. [AtsEXの有効化](https://github.com/GraphTechKEN/SerialOutputEx/tree/main?tab=readme-ov-file#5-atsex%E3%81%AE%E6%9C%89%E5%8A%B9%E5%8C%96)
 > 6. [既存連動プラグインの無効化](https://github.com/GraphTechKEN/SerialOutputEx/tree/main?tab=readme-ov-file#6-%E6%97%A2%E5%AD%98%E9%80%A3%E5%8B%95%E3%83%97%E3%83%A9%E3%82%B0%E3%82%A4%E3%83%B3%E3%81%AE%E7%84%A1%E5%8A%B9%E5%8C%96)
 > 7. [ポート設定の確認](https://github.com/GraphTechKEN/SerialOutputEx/tree/main?tab=readme-ov-file#7-%E3%83%9D%E3%83%BC%E3%83%88%E8%A8%AD%E5%AE%9A%E3%81%AE%E7%A2%BA%E8%AA%8D)
@@ -28,8 +28,9 @@
 
 ## 詳細
 ### 1. AtsEX入力デバイスプラグインのインストール
-- [ダウンロードページ(おーとま様AtsEXページ)](https://automatic9045.github.io/AtsEX/)から、最新の入力デバイスプラグイン版をインストールします。(exeインストーラ版を推奨)
-- AtsEXについては同ページをご確認ください。
+[ダウンロードページ(おーとま様AtsEXページ)](https://automatic9045.github.io/AtsEX/)から、最新の入力デバイスプラグイン版をインストールします。(exeインストーラ版を推奨)
+> [!TIP]
+> AtsEXについては同ページをご確認ください。
 
 ### 2. SerialOutputExプラグインのダウンロード
   [こちら](https://github.com/GraphTechKEN/SerialOutputEx/releases)最新版リリース下部のAssetsから、「SerialOutputEx.zip」をダウンロードします。
@@ -42,27 +43,27 @@ SerialOutputプラグイン(シリアル出力エディタ.exeを含む)を[ダ�
 > [!TIP]
 > シリアル出力エディタ_V1.1.exeのファイル名を「シリアル出力エディタ.exe」にリネームし以下の5.項以降に適用させてください。
 
-### 4. ダウンロードしたファイルの設置
+### 4. ダウンロードしたファイルの配置
 AtsEXをインストールしたフォルダ内に、
 バージョン番号(1.0)とその直下にExtentionsというフォルダがあります。  
-> `デフォルト：<Userフォルダ>\Public\Documents\AtsEx\1.0\Extensions` 
->- Userフォルダは、`C:\ユーザーやD:\ユーザーなど`
+`デフォルト：<Userフォルダ>\Public\Documents\AtsEx\1.0\Extensions` 
+Userフォルダは、`C:\ユーザーやD:\ユーザーなど`
 
 > [!TIP]
 >- BVEプログラムのインストールフォルダのInput Deviceフォルダ(例：C:\Program Files\mackoy\BveTs6\Input Devices)内のAtsEx.Caller.InputDevice.txtに上記ディレクトリが明示されています。その中のバージョン番号(最新版は1.0)の直下(Extensions)の中に配置します。
 
 上Extensionsフォルダ内に、
->- SerialOutputEx.dll
->- SerialOutputEx.xml(設定ファイル、既存のxml設定ファイルはSerialOutputEx.xmlに変更。  新規生成方法は[下記の通り](#設定ファイルの生成方法))
->- シリアル出力エディタ.exe(設定ファイルを編集するソフトウェア)  
-> を設置します。  
+- SerialOutputEx.dll
+- SerialOutputEx.xml(設定ファイル、既存のxml設定ファイルはSerialOutputEx.xmlに変更。  新規生成方法は[下記の通り](#設定ファイルの生成方法))
+- シリアル出力エディタ.exe(設定ファイルを編集するソフトウェア)
+を配置します。  
 > 設置例  
 >  ![ExtentionsFiles](https://github.com/GraphTechKEN/SerialOutputEx/blob/image/ExtentionsFiles.png)
 >
 > 推奨の設定ファイルは同梱しています。詳細は[こちら](https://github.com/GraphTechKEN/MC53_ME38_BVE_VM/blob/main/SerialOutputEx.xml)
 
 ### 5. AtsEXの有効化
-> BVEを起動し、ホーム画面の右クリック->設定メニュー->入力プラグイン->AtsEX にチェックマークを入れる(次回起動時以降は省略)
+BVEを起動し、ホーム画面の右クリック->設定メニュー->入力プラグイン->AtsEX にチェックマークを入れる(次回起動時以降は省略)
 > [!CAUTION]
 > `oneHandleInput、TS Mascon COntroller、San YingController等のプラグインはチェックを外してください`
 
