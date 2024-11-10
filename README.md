@@ -64,7 +64,8 @@ AtsEXをインストールしたフォルダ内に、
 
 5. BVEを起動し、ホーム画面の右クリック->設定メニュー->入力プラグイン->AtsEX にチェックマークを入れる(次回起動時以降は省略)
 > [!CAUTION]
-> `oneHandleInput、TS Mascon COntroller、San YingController等のプラグインはチェックを外してください`  
+> `oneHandleInput、TS Mascon COntroller、San YingController等のプラグインはチェックを外してください`
+
 ![AtsEX設定](https://github.com/GraphTechKEN/SerialOutputEx/blob/image/AtsExCheck.png "AtsEX設定")  
 
 7. 車両プラグイン側で連動設定している場合(detailmodules.txtに組み込んである場合)は、#でコメントアウトするか削除します。
