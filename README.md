@@ -7,7 +7,7 @@
 - DetailManagerを使用しない車両データにも一部対応
 - 既存のSerialOutput設定ファイルが利用可能
 - BVE画面から連動のON/OFFの変更が可能
-コンテクストメニューに追加されます。(※最新版と表示内容は異なります)
+コンテクストメニューに追加されます。(※最新版と表示内容は異なります)  
 ![コンテクストメニュー](https://github.com/GraphTechKEN/SerialOutputEx/blob/image/ContextMenu_BveEX.png "コンテクストメニュー")
 ![コンテクストメニュー2](https://github.com/GraphTechKEN/SerialOutputEx/blob/image/ContextMenu2.png "コンテクストメニュー2")  
 従来通りデバッグ画面も表示できます。  
