@@ -33,9 +33,9 @@
 > BveEXについては同ページをご確認ください。
 
 ### 2. SerialOutputExプラグインのダウンロード
-  [こちら](https://github.com/GraphTechKEN/SerialOutputEx/releases)最新版リリース下部のAssetsから、「SerialOutputEx.zip」をダウンロードします。
+  [こちら](https://github.com/GraphTechKEN/SerialOutputEx/releases)最新版リリース下部のAssetsから、「SerialOutputEx.BveEX.zip」をダウンロードします。
 > [!CAUTION]
-> `ダウンロード後、SerialOutputEx.zipのゾーン識別子を削除して展開ください。(ファイルを右クリックし、プロパティ内下部の許可をチェック)`  
+> `ダウンロード後、SerialOutputEx.BveEX.zipのゾーン識別子を削除して展開ください。(ファイルを右クリックし、プロパティ内下部の許可をチェック)`  
 > ![識別子の削除](https://github.com/GraphTechKEN/SerialOutputEx/blob/image/Property.png "識別子の削除")  
 
 ### 3. SerialOutputプラグインとシリアル出力エディタのダウンロード
@@ -45,17 +45,17 @@ SerialOutputプラグイン(シリアル出力エディタ.exeを含む)を[ダ�
 
 ### 4. ダウンロードしたファイルの配置
 > [!CAUTION]
-- BveEX版の場合
-BveEXをインストールしたフォルダ内に、
-Legacyとその直下にExtentionsというフォルダがあります。  
-`デフォルト：<Userフォルダ>\Public\Documents\BveEx\Legacy\Extensions` 
-Userフォルダは、`C:\ユーザーやD:\ユーザーなど`
-
-- 旧AtsEX版の場合
-AtsEXをインストールしたフォルダ内に、
-バージョン番号(1.0)とその直下にExtentionsというフォルダがあります。  
-`デフォルト：<Userフォルダ>\Public\Documents\AtsEx\1.0\Extensions` 
-Userフォルダは、`C:\ユーザーやD:\ユーザーなど`
+>- BveEX版の場合
+>  
+> 展開した[BveEX]フォルダごと、パブリックドキュメントに配置してください。
+> 
+> `パブリックドキュメントのデフォルトディレクトリ：<Userフォルダ>\Public\Documents\` Userフォルダは、`C:\ユーザーやD:\ユーザーなど`
+>
+> - 旧AtsEX版の場合
+>
+> 展開した[BveEX\2.0\Extensions]内のファイルを、以下のAtsEXをインストールしたフォルダ内に配置してください。
+>
+> `デフォルトディレクトリ：<Userフォルダ>\Public\Documents\AtsEx\1.0\Extensions` Userフォルダは、`C:\ユーザーやD:\ユーザーなど`
 
 > [!TIP]
 >- BVEプログラムのインストールフォルダのInput Deviceフォルダ(例：C:\Program Files\mackoy\BveTs6\Input Devices)内のAtsEx.Caller.InputDevice.txtに上記ディレクトリが明示されています。
@@ -72,13 +72,12 @@ Userフォルダは、`C:\ユーザーやD:\ユーザーなど`
 
 ### 5. BveEX(AtsEX)の有効化
 BVEを起動し、ホーム画面の右クリック->設定メニュー->入力プラグイン->BveEX(旧AtsEX) にチェックマークを入れる(次回起動時以降は省略)
+
 > [!CAUTION]
-> BveEX版の場合
-> `(旧)AtsEX、oneHandleInput、TS Mascon COntroller、San YingController等のプラグインはチェックを外してください`
-> 
+>- BveEX版の場合
+> `(旧)AtsEX、oneHandleInput、TS Mascon COntroller、San YingController等のプラグインはチェックを外してください` 
 > ![BveEX設定](https://github.com/GraphTechKEN/SerialOutputEx/blob/image/BveEXCheck.png "BveEX設定")
-> 
-> [旧AtsEX版の場合]  
+>- [旧AtsEX版の場合]  
 ![AtsEX設定](https://github.com/GraphTechKEN/SerialOutputEx/blob/image/AtsExCheck.png "AtsEX設定")  
 
 ### 6. 既存連動プラグインの無効化
