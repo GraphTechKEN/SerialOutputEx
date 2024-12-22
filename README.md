@@ -17,7 +17,7 @@
 
 ## 導入方法
 ### 概要
-> 1. [BveEX入力デバイスプラグインのインストール](https://github.com/GraphTechKEN/SerialOutputEx/tree/main#1-atsex%E5%85%A5%E5%8A%9B%E3%83%87%E3%83%90%E3%82%A4%E3%82%B9%E3%83%97%E3%83%A9%E3%82%B0%E3%82%A4%E3%83%B3%E3%81%AE%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB))
+> 1. [BveEX入力デバイスプラグインのインストール](https://github.com/GraphTechKEN/SerialOutputEx/tree/main#1-atsex%E5%85%A5%E5%8A%9B%E3%83%87%E3%83%90%E3%82%A4%E3%82%B9%E3%83%97%E3%83%A9%E3%82%B0%E3%82%A4%E3%83%B3%E3%81%AE%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB)
 > 2. [SerialOutputExプラグインのダウンロード](https://github.com/GraphTechKEN/SerialOutputEx/tree/main?tab=readme-ov-file#2-serialoutputex%E3%83%97%E3%83%A9%E3%82%B0%E3%82%A4%E3%83%B3%E3%81%AE%E3%83%80%E3%82%A6%E3%83%B3%E3%83%AD%E3%83%BC%E3%83%89)
 > 3. [SerialOutputプラグインとシリアル出力エディタのダウンロード](https://github.com/GraphTechKEN/SerialOutputEx/tree/main?tab=readme-ov-file#3-serialoutput%E3%83%97%E3%83%A9%E3%82%B0%E3%82%A4%E3%83%B3%E3%81%A8%E3%82%B7%E3%83%AA%E3%82%A2%E3%83%AB%E5%87%BA%E5%8A%9B%E3%82%A8%E3%83%87%E3%82%A3%E3%82%BF%E3%81%AE%E3%83%80%E3%82%A6%E3%83%B3%E3%83%AD%E3%83%BC%E3%83%89)
 > 4. [ダウンロードしたファイルの配置](https://github.com/GraphTechKEN/SerialOutputEx/blob/main/README.md#4-%E3%83%80%E3%82%A6%E3%83%B3%E3%83%AD%E3%83%BC%E3%83%89%E3%81%97%E3%81%9F%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E3%81%AE%E9%85%8D%E7%BD%AE)
