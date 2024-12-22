@@ -75,7 +75,8 @@ BVEを起動し、ホーム画面の右クリック->設定メニュー->入力�
 
 > [!CAUTION]
 >- BveEX版の場合
-> `(旧)AtsEX、oneHandleInput、TS Mascon COntroller、San YingController等のプラグインはチェックを外してください` 
+> `(旧)AtsEX、oneHandleInput、TS Mascon COntroller、San YingController等のプラグインはチェックを外してください`
+>
 > ![BveEX設定](https://github.com/GraphTechKEN/SerialOutputEx/blob/image/BveEXCheck.png "BveEX設定")
 >- [旧AtsEX版の場合]  
 ![AtsEX設定](https://github.com/GraphTechKEN/SerialOutputEx/blob/image/AtsExCheck.png "AtsEX設定")  
