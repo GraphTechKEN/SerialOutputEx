@@ -73,8 +73,11 @@ Userフォルダは、`C:\ユーザーやD:\ユーザーなど`
 ### 5. BveEX(AtsEX)の有効化
 BVEを起動し、ホーム画面の右クリック->設定メニュー->入力プラグイン->BveEX(旧AtsEX) にチェックマークを入れる(次回起動時以降は省略)
 > [!CAUTION]
-> `oneHandleInput、TS Mascon COntroller、San YingController等のプラグインはチェックを外してください`
-![NEW BveEX設定](https://github.com/GraphTechKEN/SerialOutputEx/blob/image/BveExCheck.png "BveEX設定")  
+> [!New!]BveEX版の場合
+> `(旧)AtsEX、oneHandleInput、TS Mascon COntroller、San YingController等のプラグインはチェックを外してください`
+![BveEX設定](https://github.com/GraphTechKEN/SerialOutputEx/blob/image/BveEXCheck.png "BveEX設定")
+> 
+> [旧AtsEX版の場合]  
 ![AtsEX設定](https://github.com/GraphTechKEN/SerialOutputEx/blob/image/AtsExCheck.png "AtsEX設定")  
 
 ### 6. 既存連動プラグインの無効化
