@@ -28,7 +28,7 @@
 
 ## 詳細
 ### 1. BveEX入力デバイスプラグインのインストール
-[ダウンロードページ(おーとま様AtsEXページ)](https://automatic9045.github.io/AtsEX/)から、最新の入力デバイスプラグイン版をインストールします。(exeインストーラ版を推奨)
+[ダウンロードページ(おーとま様BveEXページ)](https://automatic9045.github.io/AtsEX/)から、最新の入力デバイスプラグイン版をインストールします。(exeインストーラ版を推奨)
 > [!TIP]
 > BveEXについては同ページをご確認ください。
 
@@ -44,13 +44,14 @@ SerialOutputプラグイン(シリアル出力エディタ.exeを含む)を[ダ�
 > シリアル出力エディタ_V1.1.exeのファイル名を「シリアル出力エディタ.exe」にリネームし以下の5.項以降に適用させてください。
 
 ### 4. ダウンロードしたファイルの配置
-> [NEW]BveEX版の場合
+> [!CAUTION]
+- BveEX版の場合
 BveEXをインストールしたフォルダ内に、
 Legacyとその直下にExtentionsというフォルダがあります。  
 `デフォルト：<Userフォルダ>\Public\Documents\BveEx\Legacy\Extensions` 
 Userフォルダは、`C:\ユーザーやD:\ユーザーなど`
 
-> 旧AtsEX版の場合
+- 旧AtsEX版の場合
 AtsEXをインストールしたフォルダ内に、
 バージョン番号(1.0)とその直下にExtentionsというフォルダがあります。  
 `デフォルト：<Userフォルダ>\Public\Documents\AtsEx\1.0\Extensions` 
