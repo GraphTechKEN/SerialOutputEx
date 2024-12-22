@@ -10,7 +10,7 @@
 >- BVE画面から連動のON/OFFの変更が可能
 >   
 > コンテクストメニューに追加されます。(※最新版と表示内容は異なります)
-> ![コンテクストメニュー](https://github.com/GraphTechKEN/SerialOutputEx/blob/image/ContextMenu.png "コンテクストメニュー")
+> ![コンテクストメニュー](https://github.com/GraphTechKEN/SerialOutputEx/blob/image/ContextMenu_BveEX.png "コンテクストメニュー")
 > ![コンテクストメニュー2](https://github.com/GraphTechKEN/SerialOutputEx/blob/image/ContextMenu2.png "コンテクストメニュー2")  
 > 従来通りデバッグ画面も表示できます。  
 > ![コンソール表示](https://github.com/GraphTechKEN/SerialOutputEx/blob/image/Console.png "コンソール表示")  
