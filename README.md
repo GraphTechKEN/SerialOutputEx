@@ -56,8 +56,8 @@ SerialOutputプラグイン(シリアル出力エディタ.exeを含む)を[ダ�
 
 > [!TIP]
 >- BVEプログラムのインストールフォルダのInput Deviceフォルダ(例：C:\Program Files\mackoy\BveTs6\Input Devices)内のAtsEx.Caller.InputDevice.txtに上記ディレクトリが明示されています。
-
-以下の2つのファイルを、[BveEX\2.0\Extensions]フォルダと[BveEX\Legacy\Extensions]内両方に配置してください。
+  
+次に、以下の2つのファイル(設定ファイルと編集用エディタ)を、[BveEX\2.0\Extensions]フォルダと[BveEX\Legacy\Extensions]内両方に配置してください。
 1. SerialOutputEx.xml(設定ファイル、既存のxml設定ファイルはSerialOutputEx.xmlに変更。  新規生成方法は[下記の通り](#設定ファイルの生成方法))
 2. シリアル出力エディタ.exe(設定ファイルを編集するソフトウェア)を配置します。
 > 設置例(ディレクトリ例は旧AtsEX版なので無視してください)  
