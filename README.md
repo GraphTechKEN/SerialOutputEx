@@ -60,7 +60,7 @@ SerialOutputプラグイン(シリアル出力エディタ.exeを含む)を[ダ�
 以下の2つのファイルを、[BveEX\2.0\Extensions]フォルダと[BveEX\Legacy\Extensions]内両方に配置してください。
 1. SerialOutputEx.xml(設定ファイル、既存のxml設定ファイルはSerialOutputEx.xmlに変更。  新規生成方法は[下記の通り](#設定ファイルの生成方法))
 2. シリアル出力エディタ.exe(設定ファイルを編集するソフトウェア)を配置します。
-> 設置例  
+> 設置例(ディレクトリ例は旧AtsEX版なので無視してください)  
 > ![ExtentionsFiles](https://github.com/GraphTechKEN/SerialOutputEx/blob/image/ExtentionsFiles.png)
 > 
 > 推奨の設定ファイルは同梱しています。詳細は[こちら](https://github.com/GraphTechKEN/MC53_ME38_BVE_VM/blob/main/SerialOutputEx.xml)
@@ -69,8 +69,8 @@ SerialOutputプラグイン(シリアル出力エディタ.exeを含む)を[ダ�
 BVEを起動し、ホーム画面の右クリック->設定メニュー->入力プラグイン->BveEX(旧AtsEX) にチェックマークを入れる(次回起動時以降は省略)
 
 > [!CAUTION]
->- BveEX版の場合
-> `(旧)AtsEX、oneHandleInput、TS Mascon COntroller、San YingController等のプラグインはチェックを外してください`
+>- BveEX版の場合  
+> `(旧)AtsEXはチェックを外してください(何らかのエラー表示が出た場合はBVEを再起動)、他に使用しないプラグインはチェックを外してください`
 >
 > ![BveEX設定](https://github.com/GraphTechKEN/SerialOutputEx/blob/image/BveEXCheck.png "BveEX設定")
 >- [旧AtsEX版の場合]  
