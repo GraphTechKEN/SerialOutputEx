@@ -62,10 +62,9 @@ BVEを起動し、ホーム画面の右クリック->設定メニュー->入力�
 > [!CAUTION]
 >- BveEX版の場合  
 > `(旧)AtsEXはチェックを外してください(何らかのエラー表示が出た場合はBVEを再起動)、他に使用しないプラグインはチェックを外してください`
+> 既に設定されている場合は次に進みます。
 >
 > ![BveEX設定](https://github.com/GraphTechKEN/SerialOutputEx/blob/image/BveEXCheck.png "BveEX設定")
->- [旧AtsEX版の場合]  
-> ![AtsEX設定](https://github.com/GraphTechKEN/SerialOutputEx/blob/image/AtsExCheck.png "AtsEX設定")  
 
 ### 6. 既存連動プラグインの無効化
 車両プラグイン側で連動設定している場合(detailmodules.txtに組み込んである場合)は、#でコメントアウトするか削除します。
