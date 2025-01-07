@@ -9,6 +9,8 @@
     <Import_RootNamespace>CommonResource</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)DebugConsole.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)GetDeviceNames.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)OutputInfo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)OutputInfoData.cs" />
   </ItemGroup>
