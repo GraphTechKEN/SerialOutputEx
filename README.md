@@ -40,25 +40,16 @@
 SerialOutputプラグイン(シリアル出力エディタ.exeを含む)を[ダウンロード](https://x.com/ED67900_5/status/1773725982970859961)します。(E67900-5様 Xサイト)  
 
 ### 4. ダウンロードしたファイルの配置
-> [!CAUTION]
-> **BveEX版の場合**
->  
 > 展開した[BveEX]フォルダごと、パブリックドキュメントに配置してください。
 > 
 > `パブリックドキュメントのデフォルトディレクトリ：<Userフォルダ>\Public\Documents\` Userフォルダは、`C:\ユーザーやD:\ユーザーなど`
->
-> **旧AtsEX版の場合**
->
-> 展開した[BveEX\Legacy\Extensions]内のファイルを、以下のAtsEXをインストールしたフォルダ内に配置してください。
->
-> `デフォルトディレクトリ：<Userフォルダ>\Public\Documents\AtsEx\1.0\Extensions` Userフォルダは、`C:\ユーザーやD:\ユーザーなど`
 
 > [!TIP]
 >- BVEプログラムのインストールフォルダのInput Deviceフォルダ(例：C:\Program Files\mackoy\BveTs6\Input Devices)内のAtsEx.Caller.InputDevice.txtに上記ディレクトリが明示されています。
   
 次に、以下の2つのファイル(設定ファイルと編集用エディタ)を、[パブリックドキュメント\BveEX\2.0\Extensions]フォルダに配置してください。
 1. SerialOutputEx.xml(設定ファイル、既存のxml設定ファイルはSerialOutputEx.xmlに変更。  新規生成方法は[下記の通り](#設定ファイルの生成方法))
-2. シリアル出力エディタ.exe(設定ファイルを編集するソフトウェア)を配置します。
+2. シリアル出力エディタ(設定ファイルを編集するソフトウェア)を配置します。
 > 設置例(ディレクトリ例は旧AtsEX版なので無視してください)  
 > ![ExtentionsFiles](https://github.com/GraphTechKEN/SerialOutputEx/blob/image/ExtentionsFiles.png)
 > 
