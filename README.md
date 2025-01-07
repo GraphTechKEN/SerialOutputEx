@@ -51,7 +51,7 @@ SerialOutputプラグイン(シリアル出力エディタ.exeを含む)を[ダ�
 1. SerialOutputEx.xml(設定ファイル、既存のxml設定ファイルはSerialOutputEx.xmlに変更。  新規生成方法は[下記の通り](#設定ファイルの生成方法))
 2. シリアル出力エディタ(設定ファイルを編集するソフトウェア)を配置します。
 
-設置例 
+設置例  
 ![ExtentionsFiles](https://github.com/GraphTechKEN/SerialOutputEx/blob/image/ExtentionsFiles.png)
 
 推奨の設定ファイルは同梱しています。詳細は[こちら](https://github.com/GraphTechKEN/MC53_ME38_BVE_VM/blob/main/SerialOutputEx.xml)
