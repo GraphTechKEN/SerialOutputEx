@@ -134,3 +134,7 @@ Arduinoなどのマイコンなどで連動機器を開発する際は[こちら
 
 ## 著作権表示
 BVE Trainsim @mackoy
+DetailManager @Rock_On
+SerialOutput @ED67900-5
+BveEX @automatic9045
+@usashirou
