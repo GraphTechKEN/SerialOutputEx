@@ -121,6 +121,9 @@
     <Reference Include="FastMember, Version=1.0.40401.1, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\AtsEx.PluginHost.1.0.0-rc.10\lib\FastMember.dll</HintPath>
     </Reference>
+    <Reference Include="ObjectiveHarmonyPatch, Version=1.1.40209.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ObjectiveHarmonyPatch.1.1.0\lib\ObjectiveHarmonyPatch.dll</HintPath>
+    </Reference>
     <Reference Include="System">
       <Private>False</Private>
     </Reference>
