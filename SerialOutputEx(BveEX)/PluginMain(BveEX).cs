@@ -703,7 +703,7 @@ namespace SerialOutputEx
 
 
                 //BC変更シーケンス
-                int brake_notch = handles.BrakeNotch;
+                /*int brake_notch = handles.BrakeNotch;
                 if (brake_notch != brake_notch_latch)
                 {
                     if (handles.BrakeNotch == 0)
@@ -725,7 +725,7 @@ namespace SerialOutputEx
                         }
                     }
                     brake_notch_latch = brake_notch;
-                }
+                }*/
 
 
             }
@@ -868,6 +868,22 @@ namespace SerialOutputEx
                 if (indata.StartsWith("BC"))
                 {
                     int.TryParse(indata.Substring(3), out targetBcValue);
+                }
+                if (indata.StartsWith("AAB"))
+                {
+                    int.TryParse(indata.Substring(4), out int eventBcChange);
+                    Console.Write("BC" + eventBcChange.ToString() + "\r\n");
+                    //BC変更シーケンス
+                    if (eventBcChange == 1)
+                    {
+                        Patch.Invoked += BcChangeHandler;
+                        Console.Write("BC変更　設定\r\n");
+                    }
+                    else
+                    {
+                        Patch.Invoked -= BcChangeHandler;
+                        Console.Write("BC変更　解除\r\n");
+                    }
                 }
             }
             catch
