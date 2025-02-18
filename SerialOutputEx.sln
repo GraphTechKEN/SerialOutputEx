@@ -4,6 +4,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 17.11.35327.3
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SerialOutputEx(BveEX)", "SerialOutputEx(BveEX)\SerialOutputEx(BveEX).csproj", "{15F8005B-285B-4B98-B4D8-13978AD876F8}"
+	ProjectSection(ProjectDependencies) = postProject
+		{06E579DE-7F40-46F6-924D-194EB2635207} = {06E579DE-7F40-46F6-924D-194EB2635207}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SerialOutputEx(AtsEX)", "SerialOutputEx(AtsEX)\SerialOutputEx(AtsEX).csproj", "{06E579DE-7F40-46F6-924D-194EB2635207}"
 EndProject

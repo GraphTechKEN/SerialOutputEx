@@ -4,11 +4,11 @@ using System.Runtime.InteropServices;
 // アセンブリに関する一般情報は以下の属性セットをとおして制御されます。
 // 制御されます。アセンブリに関連付けられている情報を変更するには、
 // これらの属性値を変更してください。
-[assembly: AssemblyTitle("SerialOutputEx Project")]
+[assembly: AssemblyTitle("SerialOutputEX Project")]
 [assembly: AssemblyDescription("列車情報をシリアルポートから出力するプラグイン(AtsEX対応)")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("SerialOutputEx")]
+[assembly: AssemblyProduct("SerialOutputEX")]
 [assembly: AssemblyCopyright("Copyright © ぐらふ(@GraphTechKEN) 2025")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

@@ -4,9 +4,7 @@ using System.IO.Ports;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Serialization;
-
 using BveTypes.ClassWrappers;
-
 using AtsEx.PluginHost.Plugins;
 using AtsEx.PluginHost.Plugins.Extensions;
 using AtsEx.Extensions.ContextMenuHacker;
@@ -14,9 +12,6 @@ using AtsEx.PluginHost;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Reflection;
-using TypeWrapping;
-using ObjectiveHarmonyPatch;
-using System.Linq;
 
 namespace SerialOutputEx
 {
@@ -24,81 +19,43 @@ namespace SerialOutputEx
     [HideExtensionMain]
     internal class PluginMain : AssemblyPluginBase, IExtension
     {
-
+        //シリアルポート
         private SerialPort serialPort;
-        
-        private bool Debug = false;
-        private OutputInfo outputInfo = new OutputInfo();
+        private string portName = "";
 
+        //デバッグコンソール
+        private DebugConsole dc = new DebugConsole();
+        private bool Debug = false;
+
+        //出力設定
+        private OutputInfo outputInfo = new OutputInfo();
         private string str_send_latch = "";
         private DateTime dateTime;
-
         private bool flgScenarioOpened = false;
-
         private bool flgFirstSend = false;
-
         private bool flgConsoleOpened = false;
 
-        private DebugConsole dc = new DebugConsole();
+        //設定ファイル
+        private string editorPath = "";
+        private string editorPathV1_1 = "";
+        private string xmlpath;
+        private string dir;
 
+        //コンテクストメニュー
         private ToolStripMenuItem tsiOutput;
         private ToolStripMenuItem tsiConsole;
         private ToolStripMenuItem tsiPorts;
         private ToolStripMenuItem tsiOpenEditor;
-        private ToolStripMenuItem tsiStartingNotchSet;
-        private ToolStripMenuItem tsiAutoBrakeSettings;
-        private ToolStripMenuItem tsiAutoBrakeSet;
-        private ToolStripMenuItem tsiAutoAirEX;
-        private ToolStripMenuItem tsiAutoNotchFit;
         private ToolStripMenuItem tsiSettings;
-        private ToolStripMenuItem tsiSetSettingFile;
+        //private ToolStripMenuItem tsiSetSettingFile;
         private ToolStripSeparator tsiSeperator;
-
-        private string portName = "";
-        private string editorPath = "";
-        private string editorPathV1_1 = "";
-
-        private bool IsStartingNotchSet = false;
-
-        private bool flgAutoBrakeSetChange = false;
-        private bool flgAutoNotchFitChange = false;
-        private bool IsUseAutoBrake = false;
-        private bool IsUseAutoNotchFit = false;
-        private bool flgAutoAirEXChange;
-        private bool IsUseAutoAirEX;
-        private string xmlpath;
-
-        private string dir;
-
-        private readonly HarmonyPatch Patch;
-        PatchInvokedEventHandler BcChangeHandler;
-        private int targetBcValue = 0;
-        private int brake_notch_latch = 0;
-        private bool flgBcChangeMode = false;
 
         public PluginMain(PluginBuilder builder) : base(builder)
         {
-            ClassMemberSet carBrakeMembers = BveHacker.BveTypes.GetClassInfoOf<CarBrake>();
-            MethodInfo tickMethod = carBrakeMembers.OriginalType.GetMethods().First(m =>
-            {
-                ParameterInfo[] parameters = m.GetParameters();
-                return parameters.Length == 1 && parameters[0].ParameterType == typeof(double);
-            });
 
-            Patch = HarmonyPatch.Patch(null, tickMethod, PatchType.Prefix);
-            BcChangeHandler = (sender, e) =>
-            {
-                CarBrake instance = CarBrake.FromSource(e.Instance);
-                instance.BcValve.TargetPressure.Value = targetBcValue * 1000;
-
-                return PatchInvokationResult.DoNothing(e);
-            };
-            //Patch.Invoked += BcChangeHandler;
-
-            //0.4.31219.1 追記
             Extensions.AllExtensionsLoaded += Extensions_AllExtensionsLoaded;
 
-            string stTarget = System.Reflection.Assembly.GetExecutingAssembly().CodeBase;
+            string stTarget = Assembly.GetExecutingAssembly().CodeBase;
             string dllPath = "";
             //ローカルファイルのパスを表すURI
             string uriPath = stTarget;
@@ -137,13 +94,6 @@ namespace SerialOutputEx
             editorPath = path;
             editorPathV1_1 = pathV1_1;
 
-
-            IsStartingNotchSet = Properties.Settings.Default.IsStartingNotchSet;
-            IsUseAutoBrake = Properties.Settings.Default.UseAutoBrake;
-            IsUseAutoNotchFit = Properties.Settings.Default.IsUseAutoNotchFit;
-            IsUseAutoAirEX = Properties.Settings.Default.UseAutoAirEX;
-            //Properties.Settings.Default.Reload();
-
         }
 
         private void Extensions_AllExtensionsLoaded(object sender, EventArgs e)
@@ -152,13 +102,8 @@ namespace SerialOutputEx
             tsiOutput = Extensions.GetExtension<IContextMenuHacker>().AddCheckableMenuItem("SerialOutputEx 連動", SerialOutputEx_Change, ContextMenuItemType.CoreAndExtensions);
             tsiConsole = Extensions.GetExtension<IContextMenuHacker>().AddCheckableMenuItem("デバッグコンソール 表示", DebugConsoleDisp_Change, ContextMenuItemType.CoreAndExtensions);
             tsiOpenEditor = Extensions.GetExtension<IContextMenuHacker>().AddClickableMenuItem("SerialOutputEx 設定", SerialOutputExEdit_Open, ContextMenuItemType.CoreAndExtensions);
-            tsiStartingNotchSet = Extensions.GetExtension<IContextMenuHacker>().AddCheckableMenuItem("シナリオ開始時 ノッチ設定転送", SerialOutputExStartingNotchSet_Change, ContextMenuItemType.CoreAndExtensions);
-            tsiAutoBrakeSettings = Extensions.GetExtension<IContextMenuHacker>().AddClickableMenuItem("自動ブレーキ帯 設定", null, ContextMenuItemType.CoreAndExtensions);
-            tsiAutoBrakeSet = Extensions.GetExtension<IContextMenuHacker>().AddCheckableMenuItem("自動ブレーキ帯 使用", AutoBrakeSet_Change, ContextMenuItemType.CoreAndExtensions);
-            tsiAutoAirEX = Extensions.GetExtension<IContextMenuHacker>().AddCheckableMenuItem("BveEX使用", AutoBrakeEX_Change, ContextMenuItemType.CoreAndExtensions);
-            tsiAutoNotchFit = Extensions.GetExtension<IContextMenuHacker>().AddCheckableMenuItem("自動ノッチ合わせ", AutoNotchFit_Change, ContextMenuItemType.CoreAndExtensions);
             tsiSettings = Extensions.GetExtension<IContextMenuHacker>().AddClickableMenuItem("SerialOutputEx 設定", null, ContextMenuItemType.CoreAndExtensions);
-            tsiSetSettingFile = Extensions.GetExtension<IContextMenuHacker>().AddClickableMenuItem("設定ファイルの選択", SetSettingFile_Click, ContextMenuItemType.CoreAndExtensions);
+            //tsiSetSettingFile = Extensions.GetExtension<IContextMenuHacker>().AddClickableMenuItem("設定ファイルの選択", SetSettingFile_Click, ContextMenuItemType.CoreAndExtensions);
             tsiSeperator = Extensions.GetExtension<IContextMenuHacker>().AddSeparator(0);
 
             if (Debug)
@@ -170,15 +115,6 @@ namespace SerialOutputEx
                 tsiOutput.Checked = true;
             }
 
-            tsiStartingNotchSet.Checked = IsStartingNotchSet;
-            tsiAutoBrakeSet.Checked = IsUseAutoBrake;
-            tsiAutoNotchFit.Checked = IsUseAutoNotchFit;
-            tsiAutoAirEX.Checked = IsUseAutoAirEX;
-
-            tsiStartingNotchSet.Enabled = tsiOutput.Checked;
-            tsiAutoBrakeSet.Enabled = tsiOutput.Checked;
-            tsiAutoNotchFit.Enabled = tsiOutput.Checked;
-
             //"シナリオを開く"イベント
             BveHacker.ScenarioOpened += BveHacker_ScenarioOpened;
 
@@ -189,8 +125,6 @@ namespace SerialOutputEx
 
             //コンテクストメニューのアイテムクリックイベント
             BveHacker.MainForm.ContextMenu.ItemClicked += ContextMenu_ItemClicked;
-
-            //0.3.31218.1 追記ここまで
 
             try
             {
@@ -314,31 +248,6 @@ namespace SerialOutputEx
             }
         }
 
-        //自動ブレーキ設定(ON/OFF)メニュー変更
-        private void AutoBrakeSet_Change(object sender, EventArgs e)
-        {
-            flgAutoBrakeSetChange = true;
-            IsUseAutoBrake = tsiAutoBrakeSet.Checked;
-            Properties.Settings.Default.UseAutoBrake = IsUseAutoBrake;
-            tsiAutoAirEX.Enabled = IsUseAutoBrake;
-        }
-
-        //BveEX使用(On/Off)メニュー変更
-        private void AutoBrakeEX_Change(object sender, EventArgs e)
-        {
-            flgAutoAirEXChange = true;
-            IsUseAutoAirEX = tsiAutoAirEX.Checked;
-            Properties.Settings.Default.UseAutoAirEX = IsUseAutoAirEX;
-        }
-
-        //ブレーキ段数自動設定(ON/OFF)メニュー変更
-        private void AutoNotchFit_Change(object sender, EventArgs e)
-        {
-            flgAutoNotchFitChange = true;
-            IsUseAutoNotchFit = tsiAutoNotchFit.Checked;
-            Properties.Settings.Default.IsUseAutoNotchFit = IsUseAutoNotchFit;
-        }
-
         //デバッグコンソール表示(ON/OFF)変更
         private void DebugConsoleDisp_Change(object sender, EventArgs e)
         {
@@ -365,14 +274,6 @@ namespace SerialOutputEx
             sw.Close();
         }
 
-        private void SerialOutputExStartingNotchSet_Change(object sender, EventArgs e)
-        {
-            IsStartingNotchSet = tsiStartingNotchSet.Checked;
-            Properties.Settings.Default.IsStartingNotchSet = IsStartingNotchSet;
-
-        }
-
-
         private void ContextMenu_Opened(object sender, EventArgs e)
         {
             tsiSettings.DropDownItems.Clear();
@@ -381,21 +282,10 @@ namespace SerialOutputEx
             tsiSettings.DropDownItems.Add(tsiOpenEditor);
             tsiSettings.DropDownItems.Add(tss);
             tsiSettings.DropDownItems.Add(tsiConsole);
-            tsiSettings.DropDownItems.Add(tsiStartingNotchSet);
-            tsiSettings.DropDownItems.Add(tsiAutoBrakeSettings);
-            tsiSettings.DropDownItems.Add(tsiAutoNotchFit);
-            tsiOpenEditor.DropDownItems.Add(tsiSetSettingFile);
-            tsiAutoBrakeSettings.DropDownItems.Add(tsiAutoBrakeSet);
-            tsiAutoBrakeSettings.DropDownItems.Add(tsiAutoAirEX);
-
-
+            //iOpenEditor.DropDownItems.Add(tsiSetSettingFile);
 
             tsiOutput.Enabled = !flgScenarioOpened;
             tsiOutput.Checked = serialPort.IsOpen;
-
-            tsiStartingNotchSet.Enabled = tsiOutput.Checked;
-            tsiAutoBrakeSet.Enabled = tsiOutput.Checked;
-            tsiAutoNotchFit.Enabled = tsiOutput.Checked;
 
             if (!flgScenarioOpened)
             {
@@ -447,7 +337,7 @@ namespace SerialOutputEx
         }
         private string Open(string portName, bool anotherPortOpen)
         {
-            string stTarget = System.Reflection.Assembly.GetExecutingAssembly().CodeBase;
+            string stTarget = Assembly.GetExecutingAssembly().CodeBase;
             string dllPath = "";
             //ローカルファイルのパスを表すURI
             string uriPath = stTarget;
@@ -570,17 +460,12 @@ namespace SerialOutputEx
         public override void Dispose()
         {
             //シリアルポートを閉じる
-            //try
-            //{
             if (serialPort.IsOpen)
             {
                 serialPort.Close();
             }
-            //}
-            //catch { }
 
-            //AtsEXを選択解除したときに
-            //コンソールを非表示とする //0.2.31217.1 追記
+            //AtsEXを選択解除したときにコンソールを非表示とする
             if (Debug || flgConsoleOpened)
             {
                 dc.Close();
@@ -590,11 +475,6 @@ namespace SerialOutputEx
             Properties.Settings.Default.Save();
             //"シナリオを開く"イベント
             BveHacker.ScenarioOpened -= BveHacker_ScenarioOpened;
-            if (flgBcChangeMode)
-            {
-                Patch.Invoked -= BcChangeHandler;
-            }
-            Patch.Dispose();
         }
 
         public override TickResult Tick(TimeSpan elapsed)
@@ -602,68 +482,12 @@ namespace SerialOutputEx
             if (serialPort.IsOpen)
             {
 
-                if (flgFirstSend && IsStartingNotchSet)
+                if (flgFirstSend)
                 {
-                    if (serialPort.IsOpen)
-                    {
-                        serialPort.Write("WR 004 " + BveHacker.Scenario.Vehicle.Instruments.Cab.Handles.NotchInfo.BrakeNotchCount.ToString() + "\r");
-                        serialPort.Write("WR 072 " + BveHacker.Scenario.Vehicle.Instruments.Cab.Handles.NotchInfo.PowerNotchCount.ToString() + "\r");
-                        flgFirstSend = false;
-                    }
-                    if (Debug)
-                    {
-                        Console.Write("ブレーキ段数         WR 004 " + BveHacker.Scenario.Vehicle.Instruments.Cab.Handles.NotchInfo.BrakeNotchCount.ToString() + "\r\n");
-                        Console.Write("マスコンノッチ数     WR 072 " + BveHacker.Scenario.Vehicle.Instruments.Cab.Handles.NotchInfo.PowerNotchCount.ToString() + "\r\n");
-                    }
+                    //シナリオが開始されてから最初に行う処理があれば記述
+                    flgFirstSend = false;
                 }
 
-                if (flgAutoBrakeSetChange || flgAutoAirEXChange)
-                {
-                    if (serialPort.IsOpen)
-                    {
-
-                        int n = 0;
-                        string s0 = "無効";
-                        string s2 = "無効";
-                        if (IsUseAutoBrake) n |= (1 << 0); s0 = "有効";
-                        //if (cbRealAutoAir.Checked) n |= (1 << 1);
-                        if (IsUseAutoAirEX) n |= (1 << 2); s2 = "有効";
-
-                        serialPort.Write("WR 068 " + n.ToString() + "\r");
-                        if (Debug)
-                        {
-                            Console.Write("自動ブレーキ" + s0 + "\r\nBveEX" + s2 + "            WR 068 " + n.ToString() + "\r\n");
-                        }
-
-                    }
-                    flgAutoBrakeSetChange = false;
-                    flgAutoAirEXChange = false;
-
-                }
-
-                if (flgAutoNotchFitChange)
-                {
-                    if (serialPort.IsOpen)
-                    {
-                        if (IsUseAutoNotchFit)
-                        {
-                            serialPort.Write("WR 078 1\r");
-                            if (Debug)
-                            {
-                                Console.Write("自動ノッチ合わせ有効 WR 078 1\r\n");
-                            }
-                        }
-                        else
-                        {
-                            serialPort.Write("WR 078 0\r");
-                            if (Debug)
-                            {
-                                Console.Write("自動ノッチ合わせ無効 WR 078 0\r\n");
-                            }
-                        }
-                    }
-                    flgAutoNotchFitChange = false;
-                }
 
                 //If you want to change the Handle state, please access to Ats.Handle
                 HandleSet handles = BveHacker.Scenario.Vehicle.Instruments.Cab.Handles;
@@ -689,47 +513,12 @@ namespace SerialOutputEx
                 if ((str_send != str_send_latch) && ((DateTime.Now - dateTime).TotalSeconds > 0.02))
                 {
                     dateTime = DateTime.Now;
-                    //デバッグモードの時
-                    if (Debug)
-                    {
-                        Console.Write(str_send + "\r\n");
-                    }
-                    //シリアル通信オープンの時
-                    if (serialPort.IsOpen)
-                    {
-                        serialPort.Write(str_send + "\r");
-                    }
-
+                    SerialWrite(serialPort, str_send, str_send);
                 }
                 str_send_latch = str_send;
 
-                //BC変更シーケンス
-                /*int brake_notch = handles.BrakeNotch;
-                if (brake_notch != brake_notch_latch)
-                {
-                    if (handles.BrakeNotch == 0)
-                    {
-                        if (!flgBcChangeMode)
-                        {
-                            flgBcChangeMode = true;
-                            Patch.Invoked += BcChangeHandler;
-                            Console.Write("BC変更　設定\r\n");
-                        }
-                    }
-                    else
-                    {
-                        if (flgBcChangeMode)
-                        {
-                            flgBcChangeMode = false;
-                            Patch.Invoked -= BcChangeHandler;
-                            Console.Write("BC変更　解除\r\n");
-                        }
-                    }
-                    brake_notch_latch = brake_notch;
-                }*/
             }
             return new ExtensionTickResult();
-
         }
 
         private string SendCommandGenerator(OutputInfoData _data, HandleSet handles, AtsPlugin ats, VehicleStateStore vehicleStateStore)
@@ -837,7 +626,7 @@ namespace SerialOutputEx
             return str;
         }
 
-        //文字列を末尾から指定文字数切り取るメソッド 0.2.31217.1 追加
+        //文字列を末尾から指定文字数切り取る
         public static string Right(string str, int len)
         {
             if (len < 0)
@@ -855,6 +644,7 @@ namespace SerialOutputEx
             return str.Substring(str.Length - len, len);
         }
 
+        //シリアル通信受信イベント
         private void DataReceivedHandler(object sender, SerialDataReceivedEventArgs e)
         {
             //Arduino Microとの通信で受信イベントを発生させるにはRTSをTrueにすること
@@ -863,32 +653,38 @@ namespace SerialOutputEx
             try
             {
                 string indata = sp.ReadLine();
-                Console.WriteLine("受信:" + indata);
-                if (indata.StartsWith("BC"))
+                ConsoleWrite("受信:" + indata);
+                            
+                /*if (indata.StartsWith("特定の文字列"))
                 {
-                    int.TryParse(indata.Substring(3), out targetBcValue);
+                    //"特定の文字列"で受信した場合の処理
                 }
-                if (indata.StartsWith("AAB"))
-                {
-                    int.TryParse(indata.Substring(4), out int eventBcChange);
-                    Console.Write("BC" + eventBcChange.ToString() + "\r\n");
-                    //BC変更シーケンス
-                    if (eventBcChange == 1)
-                    {
-                        Patch.Invoked += BcChangeHandler;
-                        Console.Write("BC変更　設定\r\n");
-                    }
-                    else
-                    {
-                        Patch.Invoked -= BcChangeHandler;
-                        Console.Write("BC変更　解除\r\n");
-                    }
-                }
+                */
             }
             catch
             {
-                Console.WriteLine(e.ToString());
+                ConsoleWrite(e.ToString());
             }
+        }
+
+        internal void SerialWrite(SerialPort sp, string command)
+        {
+            if (sp.IsOpen)
+            {
+                sp.Write(command + "\r");
+            }
+        }
+        internal void ConsoleWrite(string command)
+        {
+            if (Debug)
+            {
+                Console.Write(command + "\r\n");
+            }
+        }
+        internal void SerialWrite(SerialPort sp, string command, string debug_command)
+        {
+            SerialWrite(sp, command);
+            ConsoleWrite(debug_command);
         }
 
     }

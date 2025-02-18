@@ -103,8 +103,8 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="0Harmony, Version=2.2.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Lib.Harmony.2.2.2\lib\net48\0Harmony.dll</HintPath>
+    <Reference Include="0Harmony, Version=2.3.5.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Lib.Harmony.2.3.5\lib\net48\0Harmony.dll</HintPath>
     </Reference>
     <Reference Include="AtsEx.CoreExtensions, Version=1.0.41005.1, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\AtsEx.CoreExtensions.1.0.0-rc.10\lib\AtsEx.CoreExtensions.dll</HintPath>
@@ -120,9 +120,6 @@
     </Reference>
     <Reference Include="FastMember, Version=1.0.40401.1, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\AtsEx.PluginHost.1.0.0-rc.10\lib\FastMember.dll</HintPath>
-    </Reference>
-    <Reference Include="ObjectiveHarmonyPatch, Version=1.1.40209.1, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ObjectiveHarmonyPatch.1.1.0\lib\ObjectiveHarmonyPatch.dll</HintPath>
     </Reference>
     <Reference Include="System">
       <Private>False</Private>
@@ -167,7 +164,9 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>xcopy /y "$(TargetPath)" C:\Users\Public\Documents\AtsEx\1.0\Extensions
-xcopy /y "$(TargetPath)" C:\Users\Public\Documents\BveEx\Legacy\Extensions</PostBuildEvent>
+xcopy /y "$(TargetPath)" C:\Users\Public\Documents\BveEx\Legacy\Extensions
+mkdir "$(TargetPath)" $(SolutionDir)bin\BveEx\Legacy\Extensions
+xcopy /y "$(TargetPath)" $(SolutionDir)bin\BveEx\Legacy\Extensions</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <DllExportIdent>65C8A9CF-CDA3-4651-82A2-EF4D34F5721F</DllExportIdent>
