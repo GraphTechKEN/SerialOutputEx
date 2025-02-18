@@ -9,8 +9,7 @@ BveEXの拡張機能を使用しております。別途BveEXを導入してく�
 - 既存のSerialOutput設定ファイルが利用可能
 - BVE画面から連動のON/OFFの変更が可能
 コンテクストメニューに追加されます。(※最新版と表示内容は異なります)  
-![コンテクストメニュー](https://github.com/GraphTechKEN/SerialOutputEx/blob/image/ContextMenu_BveEX.png "コンテクストメニュー")
-![コンテクストメニュー2](https://github.com/GraphTechKEN/SerialOutputEx/blob/image/ContextMenu2.png "コンテクストメニュー2")  
+![コンテクストメニュー](https://github.com/GraphTechKEN/SerialOutputEx/blob/image/ContextMenu_BveEX.png "コンテクストメニュー") 
 従来通りデバッグ画面も表示できます。  
 ![コンソール表示](https://github.com/GraphTechKEN/SerialOutputEx/blob/image/Console.png "コンソール表示")  
 
@@ -113,9 +112,10 @@ BVEを起動し、ホーム画面の右クリック->設定メニュー->入力�
 - [ ] 出力電文のバイナリ対応
 - [ ] サウンド出力対応(準備中)
 - [ ] xml設定ファイルの簡易切り替え
+- [ ] 出力だけではなく入力でのイベント発生
 
 > [!WARNING]
-> `ご使用は自己責任でお願いいたします。本内容による損害等については一切の責任を負いかねます。`
+> `改変再配布も制限なく使用していただいて構いませんが、ご使用は自己責任でお願いいたします。本内容による損害等については一切の責任を負いかねます。`
 
 ## 参考
 Arduinoなどのマイコンなどで連動機器を開発する際は[こちら](https://github.com/GraphTechKEN/MC53_ME38_BVE_VM#mc53-me38_bve_vm)を参考にしていただくと
